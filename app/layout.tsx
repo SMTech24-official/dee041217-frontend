@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import SessionProviderForNextAuth from "@/nextAuth/SessionProviderForNextAuth";
+import ReduxStoreProvider from "@/redux/ReduxStoreProvider";
+import background from "@/assets/images/background.png";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +28,35 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+      > */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`
+          ${geistSans.variable} 
+          ${geistMono.variable} 
+          antialiased 
+          bg-cover 
+          bg-center 
+          bg-no-repeat
+          min-h-screen
+          object-fill
+          text-white
+        `}
+        style={{
+          backgroundImage: `url(${background.src})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        
       >
-        {children}
+        <SessionProviderForNextAuth>
+              <ReduxStoreProvider>
+                  <Toaster richColors />
+                  {children}
+              </ReduxStoreProvider>
+            </SessionProviderForNextAuth>
       </body>
     </html>
   );
