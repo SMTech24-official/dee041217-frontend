@@ -49,12 +49,10 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         {/* Topbar */}
         <Headers />
-
-        {/* Children content */}
-        {children}
+        <div className="overflow-y-auto scroll-none">{children}</div>
       </main>
     </div>
   );

@@ -16,28 +16,44 @@ import { useRouter } from "next/navigation";
 const Headers = () => {
   const pathname = usePathname();
   const router = useRouter();
- 
+
   const pageTitleMap: Record<string, string> = {
     "/dashboard": "Dashboard",
     "/dashboard/practice": "Practice",
     "/dashboard/leaderboard": "Leaderboard",
     "/dashboard/progress_report": "Progress Report",
     "/dashboard/profile": "Profile",
+    "/dashboard/math_missions": "Math Missions",
+    "/dashboard/practice/addition": "Addition",
+    "/dashboard/practice/subtraction": "Subtraction",
+    "/dashboard/practice/multiplication": "Multiplication",
+    "/dashboard/practice/division": "Division",
   };
 
-  const name = pageTitleMap[pathname] || "";
+  let name = pageTitleMap[pathname] || "";
+  if (!name) {
+    // Handle dynamic question page
+    if (pathname.startsWith("/dashboard/math_missions/")) {
+      name = "Math Missions";
+    } else if (pathname.startsWith("/dashboard/timed_challenges/")) {
+      name = "Timed Challenges";
+    } else {
+      name = "";
+    }
+  }
 
   return (
     <div className="flex items-center justify-between border-b border-white/10 p-4 bg-white/10">
       <div className="flex items-center gap-3">
-        {pathname !== "/dashboard" && (
-          <div
-            onClick={() => router.back()}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white hover-white/20 cursor-pointer transition duration-300"
-          >
-            <ChevronLeft style={{ color: "green" }} />
-          </div>
-        )}
+        {pathname !== "/dashboard" &&
+          pathname !== "/dashboard/math_missions" && (
+            <div
+              onClick={() => router.back()}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white hover-white/20 cursor-pointer transition duration-300"
+            >
+              <ChevronLeft style={{ color: "green" }} />
+            </div>
+          )}
         <div>
           <h1 className="text-white text-2xl font-bold mb-1">{name}</h1>
           <p className="text-purple-200 text-sm md:text-base">

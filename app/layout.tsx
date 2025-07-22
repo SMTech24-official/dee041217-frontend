@@ -28,36 +28,35 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
-      > */}
-      <body
-        className={`
-          ${geistSans.variable} 
-          ${geistMono.variable} 
-          antialiased 
-          bg-cover 
-          bg-center 
-          bg-no-repeat
-          min-h-screen
-          object-fill
-          text-white
-        `}
-        style={{
-          backgroundImage: `url(${background.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-        
-      >
-        <SessionProviderForNextAuth>
-              <ReduxStoreProvider>
-                  <Toaster richColors />
-                  {children}
-              </ReduxStoreProvider>
-            </SessionProviderForNextAuth>
-      </body>
-    </html>
+  <body
+    className={`
+      ${geistSans.variable} 
+      ${geistMono.variable} 
+      antialiased 
+      bg-cover 
+      bg-center 
+      bg-no-repeat 
+      bg-fixed 
+      min-h-screen 
+      object-fill 
+      text-white
+    `}
+    style={{
+      backgroundImage: `url(${background.src})`,
+      backgroundAttachment: "fixed", // ensures background stays fixed
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }}
+  >
+    <SessionProviderForNextAuth>
+      <ReduxStoreProvider>
+        <Toaster richColors />
+        {children}
+      </ReduxStoreProvider>
+    </SessionProviderForNextAuth>
+  </body>
+</html>
+
   );
 }
