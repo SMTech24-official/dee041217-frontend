@@ -1,64 +1,131 @@
 "use client";
 import {
   BarChart2,
+  BookText,
   BookType,
+  CalendarCheck,
   FileText,
   LayoutDashboard,
   LogOut,
+  UserCheck,
   UserCog,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/auth_text.png";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 function Sidebar() {
   const pathName = usePathname();
+  // const role = useAppSelector(selectCurrentUser)?.role || "STUDENT";
+  const role = "ADMIN";
+
+  const sidebarItems = [
+    {
+      icon: <LayoutDashboard size={18} />,
+      label: "Home",
+      href: "/dashboard",
+      roles: ["STUDENT"],
+      color: "text-white",
+    },
+    {
+      icon: <FileText size={18} />,
+      label: "Practice",
+      href: "/dashboard/practice",
+      roles: ["STUDENT"],
+      color: "text-white",
+    },
+    {
+      icon: <BookType size={18} />,
+      label: "Leaderboard",
+      href: "/dashboard/leaderboard",
+      roles: ["STUDENT"],
+      color: "text-white",
+    },
+    {
+      icon: <BarChart2 size={18} />,
+      label: "Progress Report",
+      href: "/dashboard/progress_report",
+      roles: ["STUDENT", "PARENT"],
+      color: "text-white",
+    },
+    {
+      icon: <UserCog size={18} />,
+      label: "Profile",
+      href: "/dashboard/profile",
+      roles: ["STUDENT", "PARENT"],
+      color: "text-white",
+    },
+    // ADMIN
+    {
+      icon: <LayoutDashboard size={18} />,
+      label: "Dashboard",
+      href: "/admin",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+    {
+      icon: <FileText size={18} />,
+      label: "Math Missions",
+      href: "/admin/math_missions",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+    {
+      icon: <BookText size={18} />,
+      label: "Time Challenges",
+      href: "/admin/time_challenges",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+    {
+      icon: <CalendarCheck size={18} />,
+      label: "Daily Practice",
+      href: "/admin/daily_practice",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+    {
+      icon: <Users size={18} />,
+      label: "Users Info",
+      href: "/admin/users_information",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+    {
+      icon: <UserCheck size={18} />,
+      label: "Subscription",
+      href: "/admin/subscription",
+      roles: ["ADMIN"],
+      color: "text-black",
+    },
+  ].filter((item) => item.roles.includes(role));
+
   return (
     <>
       <div>
-        <Image
-          src={logo}
-          alt="logo"
-          width={200}
-          height={200}
-          className="w-[150px] md:w-[120px] lg:w-[150px]"
-        />
+        <div className="flex items-center justify-center">
+          <Image
+            src={logo}
+            alt="logo"
+            width={200}
+            height={200}
+            className="w-[150px] md:w-[120px] lg:w-[150px]"
+          />
+        </div>
         <nav className="space-y-4 mt-5">
-          {[
-            {
-              icon: <LayoutDashboard size={18} />,
-              label: "Home",
-              href: "/dashboard",
-            },
-            {
-              icon: <FileText size={18} />,
-              label: "Practice",
-              href: "/dashboard/practice",
-            },
-            {
-              icon: <BookType size={18} />,
-              label: "Leaderboard",
-              href: "/dashboard/leaderboard",
-            },
-            {
-              icon: <BarChart2 size={18} />,
-              label: "Progress Report",
-              href: "/dashboard/progress_report",
-            },
-            {
-              icon: <UserCog size={18} />,
-              label: "Profile",
-              href: "/dashboard/profile",
-            },
-          ].map((item) => (
+          {sidebarItems.map((item) => (
             <SidebarItem
               key={item.label}
               icon={item.icon}
               label={item.label}
               href={item.href}
               active={pathName === item.href}
+              textColor={item?.color}
             />
           ))}
         </nav>

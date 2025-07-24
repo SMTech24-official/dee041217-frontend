@@ -6,7 +6,6 @@ import logo from "@/assets/images/auth_text.png";
 import Sidebar from "@/sheard/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import background from "@/assets/images/background.png";
 
 import { Menu } from "lucide-react";
 import Headers from "@/sheard/Headers";
@@ -19,16 +18,9 @@ export default function DashboardLayout({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row text-white" 
-    style={{
-      backgroundImage: `url(${background.src})`,
-      backgroundAttachment: "fixed", // ensures background stays fixed
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-    }}>
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* Mobile Navbar */}
-      <div className="md:hidden p-4 flex justify-between items-center bg-[#25174B]">
+      <div className="md:hidden p-4 flex justify-between items-center bg-gray-100">
         <Image
           src={logo}
           alt="logo"
@@ -44,23 +36,23 @@ export default function DashboardLayout({
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="bg-[#25174B] w-64 p-6 border-r border-white/10"
+            className="bg-gray-100 w-64 p-6 border-r border-gray-100"
           >
-            <Sidebar />
+            <Sidebar/>
           </SheetContent>
         </Sheet>
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex md:w-64 flex-col justify-between bg-white/10 p-6 border-r border-white/10">
-        <Sidebar />
+      <aside className="hidden md:flex md:w-64 flex-col justify-between bg-gray-100 p-6 border-r border-gray-100">
+        <Sidebar/>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1">
         {/* Topbar */}
         <Headers />
-        <div className="overflow-y-auto scroll-none">{children}</div>
+        <div className="overflow-y-auto p-5">{children}</div>
       </main>
     </div>
   );

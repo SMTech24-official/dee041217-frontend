@@ -28,6 +28,14 @@ const Headers = () => {
     "/dashboard/practice/subtraction": "Subtraction",
     "/dashboard/practice/multiplication": "Multiplication",
     "/dashboard/practice/division": "Division",
+
+    //admin
+    "/admin": "Admin",
+    "/admin/math_missions": "Math Missions",
+    "/admin/time_challenges": "Time Challenges",
+    "/admin/daily_practice": "Daily Practice",
+    "/admin/users_information": "Users Information",
+    "/admin/subscription": "Subscription",
   };
 
   let name = pageTitleMap[pathname] || "";
@@ -37,50 +45,60 @@ const Headers = () => {
       name = "Math Missions";
     } else if (pathname.startsWith("/dashboard/timed_challenges/")) {
       name = "Timed Challenges";
+    } else if (pathname.startsWith("/admin/math_missions/")) {
+      name = "Math Missions Questions";
+    } else if (pathname.startsWith("/admin/time_challenges/")) {
+      name = "Time Challenges Questions";
     } else {
       name = "";
     }
   }
 
   return (
-    <div className="flex items-center justify-between border-b border-white/10 p-4 bg-white/10">
+    <div className={`flex items-center justify-between p-4  border-b ${pathname.includes("admin") ? "bg-gray-100 border-gray-100" : "bg-white/10 border-white/10"}`}>
       <div className="flex items-center gap-3">
         {pathname !== "/dashboard" &&
-          pathname !== "/dashboard/math_missions" && (
+          pathname !== "/dashboard/math_missions" &&
+          pathname !== "/admin" && (
             <div
               onClick={() => router.back()}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white hover-white/20 cursor-pointer transition duration-300"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-green-500 hover:bg-green-500 hover:text-white cursor-pointer transition duration-300"
             >
-              <ChevronLeft style={{ color: "green" }} />
+              <ChevronLeft />
             </div>
           )}
         <div>
-          <h1 className="text-white text-2xl font-bold mb-1">{name}</h1>
-          <p className="text-purple-200 text-sm md:text-base">
+          <h1 className={`text-2xl font-bold mb-1 ${pathname.includes("admin") ? "text-green-500" : "text-white"}`}>{name}</h1>
+          <p className={` text-sm md:text-base ${pathname.includes("admin") ? "text-green-500" : "text-purple-200"}`}>
             Here Is Your Analytics
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        {[Settings, Bell].map((Icon, idx) => (
+        { !pathname.includes("admin") && (
           <button
-            key={idx}
             className="bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer"
-            aria-label={Icon.name}
+            aria-label="User menu"
           >
-            <Icon className="h-6 w-6 text-white" />
+            <Settings className="h-6 w-6 text-white" />
           </button>
-        ))}
+        )}
+          <button
+            className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${pathname.includes("admin") ? "text-green-500 hover:text-white" : "text-white "}`}
+            aria-label="User menu"
+          >
+            <Bell className="h-6 w-6" />
+          </button>
 
         {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer"
+              className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${pathname.includes("admin") ? "text-green-500 hover:text-white" : "text-white"}`}
               aria-label="User menu"
             >
-              <User className="h-6 w-6 text-white" />
+              <User className="h-6 w-6" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>

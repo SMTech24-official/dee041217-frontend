@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProviderForNextAuth from "@/nextAuth/SessionProviderForNextAuth";
 import ReduxStoreProvider from "@/redux/ReduxStoreProvider";
-import background from "@/assets/images/background.png";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -33,21 +32,7 @@ export default function RootLayout({
       ${geistSans.variable} 
       ${geistMono.variable} 
       antialiased 
-      bg-cover 
-      bg-center 
-      bg-no-repeat 
-      bg-fixed 
-      min-h-screen 
-      object-fill 
-      text-white
     `}
-    style={{
-      backgroundImage: `url(${background.src})`,
-      backgroundAttachment: "fixed", // ensures background stays fixed
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-    }}
   >
     <SessionProviderForNextAuth>
       <ReduxStoreProvider>

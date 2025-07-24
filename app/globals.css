@@ -112,6 +112,43 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Change the color of the pagination items */
+.custom-pagination .ant-pagination-item {
+  color: #00db6c;
+  transition: 0.3s ease-in-out all;
+}
+
+.custom-pagination .ant-pagination-prev,
+.custom-pagination .ant-pagination-next {
+  color: #00db6c;
+}
+.custom-pagination .ant-pagination-item:hover {
+  background-color: #f7f9fb;
+}
+.custom-pagination .ant-pagination-item-active {
+  background-color: #00db6c !important;
+  border-color: #00db6c !important;
+  color: white !important;
+}
+.custom-pagination .ant-pagination-item-active a {
+  color: white !important;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #f74a1f;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d43a1a;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
