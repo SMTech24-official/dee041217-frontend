@@ -18,7 +18,7 @@ function MathMissionsComponent({type}: {type?: string}) {
     { id: 4, title: "Division Workout", status: "completed" },
     { id: 5, title: "Fraction Quest", status: "completed" },
     { id: 6, title: "Decimal Task", status: "completed" },
-    { id: 7, title: "Geometry Mission", status: "completed" },
+  /*   { id: 7, title: "Geometry Mission", status: "completed" },
     { id: 8, title: "Algebra Journey", status: "completed" },
     { id: 9, title: "Number Puzzle", status: "completed" },
     { id: 10, title: "Logic Game", status: "completed" },
@@ -35,7 +35,7 @@ function MathMissionsComponent({type}: {type?: string}) {
     { id: 21, title: "ok Math", status: "completed" },
     { id: 22, title: "ok Math", status: "available" },
     { id: 23, title: "ok Math", status: "locked" },
-    { id: 24, title: "ok Math", status: "locked" },
+    { id: 24, title: "ok Math", status: "locked" }, */
   ];
 
   // Define only 4 positions that will cycle repeatedly

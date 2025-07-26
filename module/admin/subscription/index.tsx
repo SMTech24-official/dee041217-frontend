@@ -130,7 +130,7 @@ function SubscriptionComponent() {
           </tr>
         ))}
       </TableComponent>
-      <div className="p-4 w-full flex justify-between items-center">
+      <div className="p-4 w-full md:flex justify-between items-center space-y-4 md:space-y-0">
         <p className="text-sm text-green-500 font-semibold">
           Showing {index + 1} to {Math.min(index + limit, total)} of {total}{" "}
           entries
