@@ -4,6 +4,8 @@ import AdminButton from "@/components/ui/AdminButton";
 import { useState } from "react";
 import QuestionsTable from "@/sheard/QuestionsTable";
 import { useSearchParams } from "next/navigation";
+import DeleteModal from "@/sheard/DeleteModal";
+import AddEdiDailyPractice from "../daily_practice/AddEdiDailyPractice";
 
 export type Question = {
   QNo: string;
@@ -19,7 +21,9 @@ export type Question = {
 
 function TimeChallengeQuestion({ id }: { id: string }) {
   const challengeName = useSearchParams().get("name");
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<Question | string>("");
+  const [deleteMissions, setDeleteMissions] = useState<Question | string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -369,6 +373,13 @@ function TimeChallengeQuestion({ id }: { id: string }) {
     setPage(page);
   };
 
+  const handleDeleteMissions = (id: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setQuestions((prev) => prev.filter((item) => item.QNo !== id));
+      setIsLoading(false);
+    }, 1000);
+  };
   const index = (page - 1) * limit;
   const paginatedQuestions = questions.slice(index, index + limit);
   const total = questions.length;
@@ -381,7 +392,7 @@ function TimeChallengeQuestion({ id }: { id: string }) {
         <AdminButton
           label="Add Question"
           icon={<Plus className="w-6 h-6" />}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen('add')}
         />
       </div>
       <QuestionsTable
@@ -391,6 +402,23 @@ function TimeChallengeQuestion({ id }: { id: string }) {
         total={total}
         index={index}
         handlePaginationChange={handlePaginationChange}
+        setOpen={setOpen}
+        setDeleteMissions={setDeleteMissions}
+      />
+      <AddEdiDailyPractice open={open} setOpen={setOpen} />
+
+      <DeleteModal
+        open={deleteMissions ? "add" : ""}
+        setOpen={() => setDeleteMissions("")}
+        name={
+          typeof deleteMissions === "object" ? deleteMissions?.QNo || "" : ""
+        }
+        handleDelete={() =>
+          typeof deleteMissions === "object" &&
+          deleteMissions &&
+          handleDeleteMissions(deleteMissions.QNo)
+        }
+        isLoading={isLoading}
       />
     </div>
   );

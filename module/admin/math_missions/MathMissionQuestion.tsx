@@ -4,6 +4,10 @@ import AdminButton from "@/components/ui/AdminButton";
 import { useState } from "react";
 import QuestionsTable from "@/sheard/QuestionsTable";
 import { useSearchParams } from "next/navigation";
+import AddEditMathMission from "./AddEditMathMission";
+import DeleteModal from "@/sheard/DeleteModal";
+import { Challenge } from ".";
+import AddEdiDailyPractice from "../daily_practice/AddEdiDailyPractice";
 
 export type Question = {
   QNo: string;
@@ -19,7 +23,9 @@ export type Question = {
 
 function MathMissionQuestion({id}: {id: string}) {
   const challengeName = useSearchParams().get("name");
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<Question | string>("");
+  const [deleteMissions, setDeleteMissions] = useState<Question | string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -359,7 +365,15 @@ function MathMissionQuestion({id}: {id: string}) {
   const handlePaginationChange = (page: number) => {
     setPage(page);
   };
-
+  
+  const handleDeleteMissions = (id: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setQuestions((prev) => prev.filter((mission) => mission.QNo !== id));
+      setIsLoading(false);
+      setDeleteMissions("");
+    }, 1000);
+  };
   const index = (page - 1) * limit;
   const paginatedQuestions = questions.slice(index, index + limit);
   const total = questions.length;
@@ -372,7 +386,7 @@ function MathMissionQuestion({id}: {id: string}) {
         <AdminButton
           label="Add Question"
           icon={<Plus className="w-6 h-6" />}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen('add')}
         />
       </div>
       <QuestionsTable
@@ -382,6 +396,23 @@ function MathMissionQuestion({id}: {id: string}) {
         total={total}
         index={index}
         handlePaginationChange={handlePaginationChange}
+        setOpen={setOpen}
+        setDeleteMissions={setDeleteMissions}
+      />
+      <AddEdiDailyPractice open={open} setOpen={setOpen} />
+
+      <DeleteModal
+        open={deleteMissions ? "add" : ""}
+        setOpen={() => setDeleteMissions("")}
+        name={
+          typeof deleteMissions === "object" ? deleteMissions?.QNo || "" : ""
+        }
+        handleDelete={() =>
+          typeof deleteMissions === "object" &&
+          deleteMissions &&
+          handleDeleteMissions(deleteMissions.QNo)
+        }
+        isLoading={isLoading}
       />
     </div>
   );

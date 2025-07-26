@@ -4,8 +4,11 @@ import AdminButton from "@/components/ui/AdminButton";
 import { useState } from "react";
 import TableComponent from "@/sheard/TableComponent";
 import { Pagination } from "antd";
+import AddEditSubscription from "./AddEditSubscription";
+import DeleteModal from "@/sheard/DeleteModal";
+import { toast } from "sonner";
 
-type Subscription = {
+export type Subscription = {
   No: string;
   SubscriptionName: string;
   Price: number;
@@ -13,7 +16,10 @@ type Subscription = {
 };
 
 function SubscriptionComponent() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<Subscription | string>("");
+
+  const [deleteMissions, setDeleteMissions] = useState<Subscription | string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -54,6 +60,15 @@ function SubscriptionComponent() {
     setPage(page);
   };
 
+  const handleDeleteMissions = (id: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setSubscriptions((prev) => prev.filter((item) => item.No !== id));
+      toast.success("Subscription deleted successfully");
+      setDeleteMissions("");
+    }, 2000);
+  };
   const index = (page - 1) * limit;
   const paginatedSubscriptions = subscriptions.slice(index, index + limit);
   const total = subscriptions.length;
@@ -66,7 +81,7 @@ function SubscriptionComponent() {
         <AdminButton
           label="Subscription"
           icon={<Plus className="w-6 h-6" />}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen('add')}
         />
       </div>
       <TableComponent
@@ -97,12 +112,14 @@ function SubscriptionComponent() {
             <td className="p-4 w-32">
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setOpen(subscription)}
                   className="text-green-500 bg-green-50 rounded-full p-2 hover:bg-green-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Update"
                 >
                   <Pencil className="w-5 h-5" />
                 </button>
                 <button
+                  onClick={() => setDeleteMissions(subscription)}
                   className="text-red-500 bg-red-50 rounded-full p-2 hover:bg-red-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Delete"
                 >
@@ -127,6 +144,23 @@ function SubscriptionComponent() {
           className="custom-pagination"
         />
       </div>
+      <AddEditSubscription open={open} setOpen={setOpen} />
+
+      <DeleteModal
+        open={deleteMissions ? "add" : ""}
+        setOpen={() => setDeleteMissions("")}
+        name={
+          typeof deleteMissions === "object"
+            ? deleteMissions?.SubscriptionName || ""
+            : ""
+        }
+        handleDelete={() =>
+          typeof deleteMissions === "object" &&
+          deleteMissions &&
+          handleDeleteMissions(deleteMissions.No)
+        }
+        isLoading={isLoading}
+      />
     </div>
   );
 }

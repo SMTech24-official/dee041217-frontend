@@ -2,27 +2,21 @@
 import { Form, Input, Modal } from "antd";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-type Challenge = {
-  id: string;
-  missionName: string;
-  totalPlayed: number;
-  totalQuestions: number;
-  status: "Active" | "Inactive";
-};
+import { Challenge } from ".";
 interface Props {
   open: Challenge | string;
   setOpen: (open: Challenge | string) => void;
 }
-function AddEditMathMission({ open, setOpen }: Props) {
+function AddEdiTimeChallenges({ open, setOpen }: Props) {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const handleAddEditUser = (values: any) => {
     console.log(values);
+
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setOpen("");
+      setOpen("");  
       form.resetFields();
     }, 2000);
   };
@@ -31,13 +25,16 @@ function AddEditMathMission({ open, setOpen }: Props) {
     if (open && (open as Challenge)?.missionName) {
       form.setFieldsValue({ missionName: (open as Challenge)?.missionName });
     }
+    if (open && (open as Challenge)?.time) {
+      form.setFieldsValue({ time: (open as Challenge)?.time });
+    }
   }, [open]);
 
   return (
     <Modal
       title={
         <h2 className="text-xl font-semibold text-green-500">
-          {typeof open === "object" ? "Edit Mission" : "Add New Mission"}
+          Add New Time Challenge
         </h2>
       }
       open={!!open}
@@ -52,10 +49,17 @@ function AddEditMathMission({ open, setOpen }: Props) {
       <Form onFinish={handleAddEditUser} layout="vertical" form={form}>
         <Form.Item
           name="missionName"
-          label={<h2 className="text-lg font-semibold">Mission Name</h2>}
+          label={<h2 className="text-lg font-semibold">Challenge Name</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
-          <Input placeholder="Enter mission name" className="h-12" />
+          <Input placeholder="Enter challenge name" className="h-12" />
+        </Form.Item>
+        <Form.Item
+          name="time"
+          label={<h2 className="text-lg font-semibold">Challenge Time</h2>}
+          rules={[{ required: true, message: "Please input your name!" }]}
+        >
+          <Input placeholder="Enter challenge time" className="h-12" />
         </Form.Item>
         <button
           type="submit"
@@ -70,7 +74,7 @@ function AddEditMathMission({ open, setOpen }: Props) {
               Loading...
             </span>
           ) : (
-            typeof open === "object" ? "Edit Mission" : "Add New Mission"
+            "Add Time Challenge"
           )}
         </button>
       </Form>
@@ -78,4 +82,4 @@ function AddEditMathMission({ open, setOpen }: Props) {
   );
 }
 
-export default AddEditMathMission;
+export default AddEdiTimeChallenges;

@@ -10,6 +10,8 @@ interface Props {
   total: number;
   index: number;
   handlePaginationChange: (page: number) => void;
+  setOpen: (open: Question | string) => void;
+  setDeleteMissions: (deleteMissions: Question | string) => void;
 }
 
 function QuestionsTable({
@@ -19,6 +21,8 @@ function QuestionsTable({
   total,
   index,
   handlePaginationChange,
+  setOpen,
+  setDeleteMissions
 }: Props) {
   return (
     <>
@@ -74,12 +78,14 @@ function QuestionsTable({
             <td className="p-4 w-32">
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setOpen(question)}
                   className="text-green-500 bg-green-50 rounded-full p-2 hover:bg-green-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Update"
                 >
                   <Pencil className="w-5 h-5" />
                 </button>
                 <button
+                  onClick={() => setDeleteMissions(question)}
                   className="text-red-500 bg-red-50 rounded-full p-2 hover:bg-red-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Delete"
                 >

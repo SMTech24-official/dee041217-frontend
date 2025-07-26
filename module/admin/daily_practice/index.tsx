@@ -3,6 +3,8 @@ import { Plus } from "lucide-react";
 import AdminButton from "@/components/ui/AdminButton";
 import { useState } from "react";
 import QuestionsTable from "@/sheard/QuestionsTable";
+import DeleteModal from "@/sheard/DeleteModal";
+import AddEdiDailyPractice from "./AddEdiDailyPractice";
 
 export type Question = {
   QNo: string;
@@ -17,7 +19,10 @@ export type Question = {
 };
 
 function DailyPracticeComponent() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<Question | string>("");
+  const [deleteMissions, setDeleteMissions] = useState<Question | string>("");
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -31,7 +36,7 @@ function DailyPracticeComponent() {
       Option4: "7",
       Answer: "8",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-002",
@@ -42,18 +47,19 @@ function DailyPracticeComponent() {
       Option4: "Jupiter",
       Answer: "Mars",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-003",
-      Question: "Sara has 10 apples. She gives 4 to her friend. How many are left?",
+      Question:
+        "Sara has 10 apples. She gives 4 to her friend. How many are left?",
       Option1: "5",
       Option2: "6",
       Option3: "7",
       Option4: "8",
       Answer: "6",
       Level: "Easy",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-004",
@@ -64,7 +70,7 @@ function DailyPracticeComponent() {
       Option4: "Brown",
       Answer: "Purple",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-005",
@@ -75,18 +81,19 @@ function DailyPracticeComponent() {
       Option4: "Sylhet",
       Answer: "Dhaka",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-006",
-      Question: "Lina had 15 pencils. She lost 5. Then bought 3 more. How many pencils now?",
+      Question:
+        "Lina had 15 pencils. She lost 5. Then bought 3 more. How many pencils now?",
       Option1: "13",
       Option2: "12",
       Option3: "10",
       Option4: "11",
       Answer: "13",
       Level: "Easy",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-007",
@@ -97,29 +104,31 @@ function DailyPracticeComponent() {
       Option4: "Snake",
       Answer: "Dolphin",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-008",
-      Question: "If a train leaves at 5:00 PM and travels for 3 hours, what time will it arrive?",
+      Question:
+        "If a train leaves at 5:00 PM and travels for 3 hours, what time will it arrive?",
       Option1: "8:00 PM",
       Option2: "7:00 PM",
       Option3: "6:00 PM",
       Option4: "9:00 PM",
       Answer: "8:00 PM",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-009",
-      Question: "Rafi read 25 pages on Monday and 30 pages on Tuesday. How many pages in total?",
+      Question:
+        "Rafi read 25 pages on Monday and 30 pages on Tuesday. How many pages in total?",
       Option1: "55",
       Option2: "50",
       Option3: "45",
       Option4: "60",
       Answer: "55",
       Level: "Medium",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-010",
@@ -130,18 +139,19 @@ function DailyPracticeComponent() {
       Option4: "Elephant",
       Answer: "Bat",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-011",
-      Question: "There are 4 baskets. Each has 5 apples. How many apples in total?",
+      Question:
+        "There are 4 baskets. Each has 5 apples. How many apples in total?",
       Option1: "15",
       Option2: "20",
       Option3: "25",
       Option4: "10",
       Answer: "20",
       Level: "Medium",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-012",
@@ -152,7 +162,7 @@ function DailyPracticeComponent() {
       Option4: "Nitrogen",
       Answer: "Oxygen",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-013",
@@ -163,7 +173,7 @@ function DailyPracticeComponent() {
       Option4: "8",
       Answer: "6",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-014",
@@ -174,18 +184,19 @@ function DailyPracticeComponent() {
       Option4: "6",
       Answer: "9",
       Level: "Hard",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-015",
-      Question: "A bus has 40 seats. 18 people are on it. How many empty seats?",
+      Question:
+        "A bus has 40 seats. 18 people are on it. How many empty seats?",
       Option1: "20",
       Option2: "22",
       Option3: "23",
       Option4: "25",
       Answer: "22",
       Level: "Hard",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-016",
@@ -196,18 +207,19 @@ function DailyPracticeComponent() {
       Option4: "21",
       Answer: "13",
       Level: "Hard",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-017",
-      Question: "Rehana had $100. She bought a bag for $45 and shoes for $30. What's left?",
+      Question:
+        "Rehana had $100. She bought a bag for $45 and shoes for $30. What's left?",
       Option1: "25",
       Option2: "20",
       Option3: "30",
       Option4: "35",
       Answer: "25",
       Level: "Hard",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-018",
@@ -218,7 +230,7 @@ function DailyPracticeComponent() {
       Option4: "Atlantic",
       Answer: "Pacific",
       Level: "Hard",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-019",
@@ -229,7 +241,7 @@ function DailyPracticeComponent() {
       Option4: "70",
       Answer: "72",
       Level: "Hard",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-020",
@@ -240,7 +252,7 @@ function DailyPracticeComponent() {
       Option4: "Saturn",
       Answer: "Saturn",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-021",
@@ -251,18 +263,19 @@ function DailyPracticeComponent() {
       Option4: "Salt",
       Answer: "Flour",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-022",
-      Question: "Ali had 6 chocolates. He gave 2 to his sister. How many does he have now?",
+      Question:
+        "Ali had 6 chocolates. He gave 2 to his sister. How many does he have now?",
       Option1: "4",
       Option2: "3",
       Option3: "5",
       Option4: "2",
       Answer: "4",
       Level: "Easy",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-023",
@@ -273,7 +286,7 @@ function DailyPracticeComponent() {
       Option4: "April",
       Answer: "February",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-024",
@@ -284,7 +297,7 @@ function DailyPracticeComponent() {
       Option4: "40",
       Answer: "42",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-025",
@@ -295,7 +308,7 @@ function DailyPracticeComponent() {
       Option4: "Air, Food, Water",
       Answer: "Sunlight, Carbon Dioxide, Water",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-026",
@@ -306,7 +319,7 @@ function DailyPracticeComponent() {
       Option4: "60",
       Answer: "48",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-027",
@@ -317,7 +330,7 @@ function DailyPracticeComponent() {
       Option4: "Circle",
       Answer: "Square",
       Level: "Easy",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-028",
@@ -328,7 +341,7 @@ function DailyPracticeComponent() {
       Option4: "12",
       Answer: "8",
       Level: "Medium",
-      Type: "Story"
+      Type: "Story",
     },
     {
       QNo: "Q-029",
@@ -339,23 +352,33 @@ function DailyPracticeComponent() {
       Option4: "Glass",
       Answer: "Iron",
       Level: "Medium",
-      Type: "Simple"
+      Type: "Simple",
     },
     {
       QNo: "Q-030",
-      Question: "Rina baked 3 cakes with 4 slices each. How many slices in total?",
+      Question:
+        "Rina baked 3 cakes with 4 slices each. How many slices in total?",
       Option1: "12",
       Option2: "10",
       Option3: "14",
       Option4: "9",
       Answer: "12",
       Level: "Hard",
-      Type: "Story"
-    }
+      Type: "Story",
+    },
   ]);
 
   const handlePaginationChange = (page: number) => {
     setPage(page);
+  };
+
+  const handleDeleteMissions = (id: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setQuestions((prev) => prev.filter((mission) => mission.QNo !== id));
+      setIsLoading(false);
+      setDeleteMissions("");
+    }, 1000);
   };
 
   const index = (page - 1) * limit;
@@ -370,7 +393,7 @@ function DailyPracticeComponent() {
         <AdminButton
           label="Add Question"
           icon={<Plus className="w-6 h-6" />}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen("add")}
         />
       </div>
       <QuestionsTable
@@ -380,6 +403,23 @@ function DailyPracticeComponent() {
         total={total}
         index={index}
         handlePaginationChange={handlePaginationChange}
+        setOpen={setOpen}
+        setDeleteMissions={setDeleteMissions}
+      />
+      <AddEdiDailyPractice open={open} setOpen={setOpen} />
+
+      <DeleteModal
+        open={deleteMissions ? "add" : ""}
+        setOpen={() => setDeleteMissions("")}
+        name={
+          typeof deleteMissions === "object" ? deleteMissions?.QNo || "" : ""
+        }
+        handleDelete={() =>
+          typeof deleteMissions === "object" &&
+          deleteMissions &&
+          handleDeleteMissions(deleteMissions.QNo)
+        }
+        isLoading={isLoading}
       />
     </div>
   );

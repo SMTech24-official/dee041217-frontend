@@ -5,9 +5,11 @@ import { useState } from "react";
 import TableComponent from "@/sheard/TableComponent";
 import { Pagination } from "antd";
 import Link from "next/link";
+import AddEdiTimeChallenges from "./AddEdiTimeChallenges";
+import DeleteModal from "@/sheard/DeleteModal";
 
-type Challenge = {
-    id: string;
+export type Challenge = {
+  id: string;
   missionName: string;
   totalPlayed: number;
   totalQuestions: number;
@@ -16,7 +18,11 @@ type Challenge = {
 };
 
 function TimeChallengesComponent() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<Challenge | string>("");
+
+  const [deleteMissions, setDeleteMissions] = useState<Challenge | string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -267,6 +273,15 @@ function TimeChallengesComponent() {
     setPage(page);
   };
 
+  const handleDeleteMissions = (id: string) => {
+    console.log(id);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setDeleteMissions("");
+    }, 2000);
+  };
+
   const index = (page - 1) * limit;
   const paginatedMissions = missions.slice(index, index + limit);
   const total = missions.length;
@@ -279,7 +294,7 @@ function TimeChallengesComponent() {
         <AdminButton
           label="Add Challenge"
           icon={<Plus className="w-6 h-6" />}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen("add")}
         />
       </div>
       <TableComponent
@@ -295,9 +310,12 @@ function TimeChallengesComponent() {
         {paginatedMissions?.map((mission, index) => (
           <tr key={index} className="border-b hover:bg-gray-100">
             <td className="px-6 py-4">
-                <Link href={`/admin/time_challenges/${mission?.id}?name=${mission?.missionName}`} className="hover:text-green-500 cursor-pointer transition duration-300 ease-in-out hover:underline">
-                    {mission?.missionName}
-                </Link>
+              <Link
+                href={`/admin/time_challenges/${mission?.id}?name=${mission?.missionName}`}
+                className="hover:text-green-500 cursor-pointer transition duration-300 ease-in-out hover:underline"
+              >
+                {mission?.missionName}
+              </Link>
             </td>
             <td className="p-4">{mission?.totalPlayed}</td>
             <td className="p-4">{mission?.totalQuestions}</td>
@@ -316,12 +334,14 @@ function TimeChallengesComponent() {
             <td className="p-4 w-32">
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setOpen(mission)}
                   className="text-green-500 bg-green-50 rounded-full p-2 hover:bg-green-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Update"
                 >
                   <Pencil className="w-5 h-5" />
                 </button>
                 <button
+                  onClick={() => setDeleteMissions(mission)}
                   className="text-red-500 bg-red-50 rounded-full p-2 hover:bg-red-500 hover:text-white cursor-pointer transition-all duration-300"
                   title="Delete"
                 >
@@ -346,6 +366,26 @@ function TimeChallengesComponent() {
           className="custom-pagination"
         />
       </div>
+
+      {/* Add Edit Modal */}
+      <AddEdiTimeChallenges open={open} setOpen={setOpen} />
+
+      {/* Delete Modal */}
+      <DeleteModal
+        open={deleteMissions ? "add" : ""}
+        setOpen={() => setDeleteMissions("")}
+        name={
+          typeof deleteMissions === "object"
+            ? deleteMissions?.missionName || ""
+            : ""
+        }
+        handleDelete={() =>
+          typeof deleteMissions === "object" &&
+          deleteMissions &&
+          handleDeleteMissions(deleteMissions.id)
+        }
+        isLoading={isLoading}
+      />
     </div>
   );
 }
