@@ -54,8 +54,8 @@ export default function ProgressReportComponent() {
     }
   };
   return (
-    <div className="relative w-full md:w-7/12 mx-auto p-5 md:h-[calc(100vh-100px)] flex items-center justify-center flex-col gap-5 md:gap-10">
-      <div className="relative z-10 p-6 space-y-6 w-full">
+    <div className="relative w-full xl:w-7/12 mx-auto py-5 mt-3 flex items-center justify-center flex-col gap-5 md:gap-10 h-full">
+      <div className="relative z-10 py-6 space-y-6 w-full">
         {subjects.map((subject, index) => {
           const total = subject.correct + subject.skipped + subject.incorrect
           const correctWidth = getProgressWidth(subject.correct, total)

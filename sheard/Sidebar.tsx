@@ -22,7 +22,7 @@ import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 function Sidebar() {
   const pathName = usePathname();
   // const role = useAppSelector(selectCurrentUser)?.role || "STUDENT";
-  const role = "ADMIN";
+  const role = "STUDENT";
 
   const sidebarItems = [
     {
@@ -30,35 +30,35 @@ function Sidebar() {
       label: "Home",
       href: "/dashboard",
       roles: ["STUDENT"],
-      color: "text-white",
+      color: "text-black md:text-white",
     },
     {
       icon: <FileText size={18} />,
       label: "Practice",
       href: "/dashboard/practice",
       roles: ["STUDENT"],
-      color: "text-white",
+      color: "text-black md:text-white",
     },
     {
       icon: <BookType size={18} />,
       label: "Leaderboard",
       href: "/dashboard/leaderboard",
       roles: ["STUDENT"],
-      color: "text-white",
+      color: "text-black md:text-white",
     },
     {
       icon: <BarChart2 size={18} />,
       label: "Progress Report",
       href: "/dashboard/progress_report",
       roles: ["STUDENT", "PARENT"],
-      color: "text-white",
+      color: "text-black md:text-white",
     },
     {
       icon: <UserCog size={18} />,
       label: "Profile",
       href: "/dashboard/profile",
       roles: ["STUDENT", "PARENT"],
-      color: "text-white",
+      color: "text-black md:text-white",
     },
     // ADMIN
     {
@@ -190,7 +190,7 @@ function SidebarItem({
           ${
             active
               ? "bg-gradient-to-b from-green-400 to-green-500 text-white shadow-[0_6px_0_0_rgba(34,197,94,0.5)] hover:brightness-110"
-              : `hover:bg-white/10 ${textColor || "text-white"}`
+              : `hover:bg-white/10 ${textColor || "text-white md:text-black"}`
           }
         `}
     >

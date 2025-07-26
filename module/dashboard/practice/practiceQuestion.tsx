@@ -147,7 +147,7 @@ function PracticeQuestion({ type }: { type: string }) {
   };
 
   return (
-    <div className="max-w-xl mx-auto h-[calc(100vh-100px)] flex items-center justify-center flex-col gap-5">
+    <div className="max-w-xl mx-auto h-full flex items-center justify-center flex-col gap-5">
       <div className="p-6 bg-white rounded-lg shadow-md w-full">
         <div>
           <Switch
@@ -243,7 +243,7 @@ function PracticeQuestion({ type }: { type: string }) {
                   !answeredQuestions[currentQuestionIndex] &&
                   setSelectedAnswer(option)
                 }
-                className={`flex items-center justify-between rounded-xl p-5 cursor-pointer transition-all duration-300 ${
+                className={`flex items-center justify-between rounded-xl p-2 md:p-5 cursor-pointer transition-all duration-300 ${
                   showAsSelected
                     ? `bg-gradient-to-b ${handleChallengeType(
                         challengeType

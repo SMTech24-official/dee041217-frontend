@@ -29,7 +29,7 @@ export default function DashboardLayout({
       <main className="flex-1">
         {/* Topbar */}
         <Headers />
-        <div className="overflow-y-auto scroll-none">{children}</div>
+        <div className="overflow-y-auto p-5 h-[calc(100vh-80px)] overscroll-none">{children}</div>
       </main>
     </div>
   );

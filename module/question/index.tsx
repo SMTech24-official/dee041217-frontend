@@ -15,7 +15,9 @@ function QuestionComponent({ id }: { id: string }) {
   const pathname = usePathname();
   const challengeType = pathname?.includes("timed_challenges");
 
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
   const [time, setTime] = useState<number>(180);
+  
 
   console.log(id);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -106,13 +108,18 @@ function QuestionComponent({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (time > 0) {
-        setTime((prevTime) => prevTime - 1);
-      }
+    const id = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime > 0) return prevTime - 1;
+        clearInterval(id);
+        return 0;
+      });
     }, 1000);
-    return () => clearInterval(timer);
+  
+    setTimerId(id); // Save interval ID
+    return () => clearInterval(id); // Clear on unmount
   }, []);
+  
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -121,14 +128,27 @@ function QuestionComponent({ id }: { id: string }) {
     const s = (seconds % 60).toString().padStart(2, "0");
     return `${m} : ${s}`;
   };
+
+  const handleSetCurrentQuestionIndex = () => {setIsLoading(true);
+    console.log(answeredQuestions);
+    setTimeout(() => {
+      setIsLoading(false);
+      setCurrentQuestionIndex(0);
+      setAnsweredQuestions({});
+      setSelectedAnswer(null);
+      toast.success("Question submitted successfully");
+    }, 2000);
+  };
+  
+  
   return (
-    <div className="max-w-xl mx-auto h-[calc(100vh-100px)] flex items-center justify-center flex-col gap-5">
+    <div className="max-w-xl mx-auto flex items-center justify-center flex-col gap-5">
       {challengeType && (
         <div className="flex items-center justify-center w-full gap-5">
           <p className=" whitespace-nowrap font-semibold bg-gradient-to-b from-[#1DE5B1] to-[#1BA570] hover:from-[#1DE5B1] hover:to-[#1BA570] p-3 rounded text-2xl w-full text-center">
             {formatTime(time)}
           </p>
-          <button className="w-16 h-14 flex items-center justify-center rounded-full bg-white hover:bg-red-500 hover:text-white cursor-pointer transition duration-300 text-black">
+          <button onClick={handleSetCurrentQuestionIndex} className="w-16 h-14 flex items-center justify-center rounded-full bg-white hover:bg-red-500 hover:text-white cursor-pointer transition duration-300 text-black">
             <X />
           </button>
         </div>

@@ -97,7 +97,7 @@ function TimedChallengesComponent() {
     }, 2000);
   };
   return (
-    <div className="max-w-xl mx-auto h-[calc(100vh-100px)] flex items-center justify-center">
+    <div className="max-w-xl mx-auto h-full flex items-center justify-center">
       <div className="p-6 bg-white rounded-lg shadow-md w-full">
         <div className="flex items-center justify-between gap-2">
           <p className=" text-blue-500 whitespace-nowrap font-semibold">

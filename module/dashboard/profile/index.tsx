@@ -58,41 +58,9 @@ function ProfileComponent() {
     "#0f766e", // teal-700
     "#1e3a8a", // blue-900
   ];
-  
-  const textColors = [
-    "text-gray-500",
-    "text-blue-500",
-    "text-green-500",
-    "text-yellow-500",
-    "text-red-500",
-    "text-purple-500",
-    "text-pink-500",
-    "text-indigo-500",
-    "text-teal-500",
-    "text-cyan-500",
-    "text-lime-500",
-    "text-amber-500",
-    "text-rose-500",
-    "text-sky-500",
-    "text-violet-500",
-    "text-emerald-500",
-    "text-fuchsia-500",
-    "text-stone-500",
-    "text-zinc-500",
-    "text-neutral-500",
-    "text-orange-500",
-    "text-yellow-500",
-    "text-green-500",
-    "text-blue-500",
-    "text-orange-500",
-    "text-cyan-500",
-    "text-teal-500",
-    "text-red-500",
-    "text-indigo-500",
-  ];
 
   return (
-    <div className="w-full md:w-7/12 mx-auto p-5  flex items-center justify-center flex-col gap-5 md:gap-10">
+    <div className="w-full xl:w-7/12 mx-auto p-5  flex items-center justify-center flex-col gap-5 md:gap-10">
       <div className="flex items-center justify-center bg-gradient-to-b from-[#36d1dc] to-[#1e90b7] shadow-[0_6px_0_0_#157a9c] rounded-full p-2 w-44 h-44">
         <Image src={profile} alt="profile" width={100} height={100} />
       </div>
@@ -134,7 +102,7 @@ function ProfileComponent() {
       </div>
       <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 mx-4 shadow-2xl w-full">
         <h2 className="text-xl font-bold text-gray-800 mb-6">Level Badges</h2>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between flex-wrap items-center">
           {levelBadges.map((badge, index) => {
             const gradient = gradients[index % gradients.length];
             return (

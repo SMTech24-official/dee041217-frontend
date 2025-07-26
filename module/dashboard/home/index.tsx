@@ -59,9 +59,9 @@ function DashboardHomeComponent() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto w-full space-y-5 h-[calc(100vh-200px)]">
+    <div className="max-w-5xl mx-auto w-full space-y-5 h-[calc(100vh-12rem)]">
       {/* Top Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         {/* Timed Challenges */}
         <Link
           href="/dashboard/timed_challenges"
@@ -88,7 +88,7 @@ function DashboardHomeComponent() {
       </div>
 
       {/* Daily Challenges Section */}
-      <div className="bg-white rounded-4xl mb-6 shadow-[0_10px_0_0_rgba(34,197,94,0.5)]">
+      <div className="bg-white rounded-4xl mb-6">
         <h1 className="text-2xl font-bold text-black/80 p-6">
           Daily Challenge
         </h1>

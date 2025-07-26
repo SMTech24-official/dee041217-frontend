@@ -46,55 +46,56 @@ export default function LeaderboardComponent() {
   ];
 
   return (
-    <div className="w-full md:w-7/12 mx-auto p-5 md:h-[calc(100vh-100px)] flex items-center justify-center flex-col gap-5 md:gap-10">
-      <div className="relative z-10 p-6 pt-20 w-full">
+    <div className="w-full md:w-7/12 mx-auto p-5 mt-48 sm:mt-0 h-full flex items-center justify-center flex-col gap-5 md:gap-10">
+      <div className="relative z-10 p-6 pt-10 w-full">
         {/* Top 3 Players */}
-        <div className="flex justify-center items-end mb-8">
+
+        <div className="sm:flex justify-center items-end my-8">
           {topPlayers.map((player) => (
             <div
               key={player.id}
               className={`flex flex-col items-center mx-4 ${
-                player.position === 1 ? "mb-20" : ""
-              }`}
-            >
-              {player.position === 1 && (
-                <div className="mb-2">
-                  <Image
-                    width={400}
-                    height={400}
-                    src={top}
-                    alt={player.name}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                </div>
-              )}
-
-              <div
-                className={`relative rounded-full flex items-center justify-center mb-2 shadow-lg ${
-                  player.position === 1 ? "w-40 h-44" : "w-32 h-36"
-                }`}
-              >
+              player.position === 1 ? "mb-20" : ""
+            }`}
+          >
+            {player.position === 1 && (
+              <div className="mb-2">
                 <Image
                   width={400}
                   height={400}
-                  src={player.avatar}
+                  src={top}
                   alt={player.name}
-                  className="w-full h-full rounded-full object-fill"
+                  className="w-full h-full rounded-full object-cover"
                 />
               </div>
+            )}
 
-              <div className="text-center text-white">
-                <div className="font-semibold text-sm">{player.name}</div>
-                <div className="text-xs opacity-80">
-                  Level: {player.level} | Coin: {player.coins}
-                </div>
+            <div
+              className={`relative rounded-full flex items-center justify-center mb-2 ${
+                player.position === 1 ? "w-40 h-44" : "w-32 h-36"
+              }`}
+            >
+              <Image
+                width={400}
+                height={400}
+                src={player.avatar}
+                alt={player.name}
+                className="w-full h-full rounded-full object-fill"
+              />
+            </div>
+
+            <div className="text-center">
+              <div className="font-semibold text-sm">{player.name}</div>
+              <div className="text-xs opacity-80">
+                Level: {player.level} | Coin: {player.coins}
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
 
         {/* Leaderboard Panel */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 mx-4 shadow-2xl">
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 mx-4 shadow-2xl w-full">
           {leaderboardEntries.map((entry, index) => (
             <div key={entry.rank}>
               {entry.rank === 4 && (
