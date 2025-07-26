@@ -148,6 +148,11 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d43a1a;
 }
+.apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center,
+.apexcharts-legend.apx-legend-position-top.apexcharts-align-center,
+.apexcharts-toolbar {
+  display: none !important;
+}
 
 @layer base {
   * {

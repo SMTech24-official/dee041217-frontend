@@ -1,21 +1,20 @@
 "use client";
-import { EllipsisVertical, Pencil, Plus, Trash2 } from "lucide-react";
-import AdminButton from "@/components/ui/AdminButton";
-import { useEffect, useRef, useState } from "react";
+import { EllipsisVertical, Loader } from "lucide-react";
+import { useRef, useState } from "react";
 import TableComponent from "@/sheard/TableComponent";
 import { Modal, Pagination } from "antd";
-import Link from "next/link";
 import LeaderboardComponent from "./leaderboard";
+import { toast } from "sonner";
 
 type User = {
   id: string;
   user_id: string;
   name: string;
   email: string;
+  status: string;
 };
 
 function UsersInformationComponent() {
-  const [open, setOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
 
@@ -27,186 +26,217 @@ function UsersInformationComponent() {
     null
   );
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<User[]>([
     {
       id: "1",
       user_id: "USR1001",
       name: "Arif Hossain",
       email: "arif.hossain@example.com",
+      status: "Active",
     },
     {
       id: "2",
       user_id: "USR1002",
       name: "Nusrat Jahan",
       email: "nusrat.jahan@example.com",
+      status: "Active",
     },
     {
       id: "3",
       user_id: "USR1003",
       name: "Sajid Rahman",
       email: "sajid.rahman@example.com",
+      status: "Inactive",
     },
     {
       id: "4",
       user_id: "USR1004",
       name: "Mim Akter",
       email: "mim.akter@example.com",
+      status: "Active",
     },
     {
       id: "5",
       user_id: "USR1005",
       name: "Tarek Aziz",
       email: "tarek.aziz@example.com",
+      status: "Active",
     },
     {
       id: "6",
       user_id: "USR1006",
       name: "Rafiul Islam",
       email: "rafiul.islam@example.com",
+      status: "Active",
     },
     {
       id: "7",
       user_id: "USR1007",
       name: "Shirin Akhter",
       email: "shirin.akhter@example.com",
+      status: "Active",
     },
     {
       id: "8",
       user_id: "USR1008",
       name: "Jamil Khan",
       email: "jamil.khan@example.com",
+      status: "Active",
     },
     {
       id: "9",
       user_id: "USR1009",
       name: "Ayesha Siddiqua",
       email: "ayesha.siddiqua@example.com",
+      status: "Active",
     },
     {
       id: "10",
       user_id: "USR1010",
       name: "Fahim Reza",
       email: "fahim.reza@example.com",
+      status: "Active",
     },
     {
       id: "11",
       user_id: "USR1011",
       name: "Lamia Haque",
       email: "lamia.haque@example.com",
+      status: "Active",
     },
     {
       id: "12",
       user_id: "USR1012",
       name: "Tanjil Mahmud",
       email: "tanjil.mahmud@example.com",
+      status: "Active",
     },
     {
       id: "13",
       user_id: "USR1013",
       name: "Sadia Islam",
       email: "sadia.islam@example.com",
+      status: "Active",
     },
     {
       id: "14",
       user_id: "USR1014",
       name: "Nazmul Huda",
       email: "nazmul.huda@example.com",
+      status: "Active",
     },
     {
       id: "15",
       user_id: "USR1015",
       name: "Raisa Anjum",
       email: "raisa.anjum@example.com",
+      status: "Active",
     },
     {
       id: "16",
       user_id: "USR1016",
       name: "Tanvir Hasan",
       email: "tanvir.hasan@example.com",
+      status: "Active",
     },
     {
       id: "17",
       user_id: "USR1017",
       name: "Elita Karim",
       email: "elita.karim@example.com",
+      status: "Active",
     },
     {
       id: "18",
       user_id: "USR1018",
       name: "Morsalin Rafi",
       email: "morsalin.rafi@example.com",
+      status: "Active",
     },
     {
       id: "19",
       user_id: "USR1019",
       name: "Shahida Parveen",
       email: "shahida.parveen@example.com",
+      status: "Active",
     },
     {
       id: "20",
       user_id: "USR1020",
       name: "Noman Faruq",
       email: "noman.faruq@example.com",
+      status: "Active",
     },
     {
       id: "21",
       user_id: "USR1021",
       name: "Mahira Sultana",
       email: "mahira.sultana@example.com",
+      status: "Active",
     },
     {
       id: "22",
       user_id: "USR1022",
       name: "Rubel Hossain",
       email: "rubel.hossain@example.com",
+      status: "Active",
     },
     {
       id: "23",
       user_id: "USR1023",
       name: "Sohana Rahman",
       email: "sohana.rahman@example.com",
+      status: "Active",
     },
     {
       id: "24",
       user_id: "USR1024",
       name: "Zubair Ahmed",
       email: "zubair.ahmed@example.com",
+      status: "Active",
     },
     {
       id: "25",
       user_id: "USR1025",
       name: "Ruma Begum",
       email: "ruma.begum@example.com",
+      status: "Active",
     },
     {
       id: "26",
       user_id: "USR1026",
       name: "Imran Kabir",
       email: "imran.kabir@example.com",
+      status: "Active",
     },
     {
       id: "27",
       user_id: "USR1027",
       name: "Farzana Yasmin",
       email: "farzana.yasmin@example.com",
+      status: "Active",
     },
     {
       id: "28",
       user_id: "USR1028",
       name: "Hasan Ali",
       email: "hasan.ali@example.com",
+      status: "Active",
     },
     {
       id: "29",
       user_id: "USR1029",
       name: "Nadiya Khan",
       email: "nadiya.khan@example.com",
+      status: "Active",
     },
     {
       id: "30",
       user_id: "USR1030",
       name: "Shuvo Chowdhury",
       email: "shuvo.chowdhury@example.com",
+      status: "Active",
     },
   ]);
 
@@ -219,32 +249,57 @@ function UsersInformationComponent() {
   const total = users.length;
 
   const handleBlockUser = () => {
-    if (selectedUser) {
-      // Handle block action
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setUsers((prev) =>
+        prev.filter((user) => user.id !== selectedUserDelete?.id)
+      );
       setSelectedUser(null);
-    }
+      toast.success("User block successfully");
+    }, 2000);
   };
 
-  const handleDeleteUser = () => {
-    if (selectedUserDelete) {
-      // Handle delete action
-      setSelectedUserDelete(null);
-    }
-  };
   console.log(selectedUser);
+
+  const handleDeleteUser = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setUsers((prev) =>
+        prev.filter((user) => user.id !== selectedUserDelete?.id)
+      );
+      setSelectedUserDelete(null);
+      toast.success("User deleted successfully");
+    }, 2000);
+  };
   return (
-    <div className="rounded-lg border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-4 p-5">
+    <div className="rounded-lg border border-gray-100 grid grid-cols-1 xl:grid-cols-3 gap-4 p-5">
       <div className="col-span-2 border border-gray-200 rounded-lg">
         <div>
           <div className="flex items-center justify-between p-5">
-            <h1 className="text-2xl font-bold">All Users Information</h1>
+            <h1 className="md:text-2xl text-xl font-bold">All Users Information</h1>
           </div>
-          <TableComponent headers={["User ID", "Name", "Email", "Action"]}>
+          <TableComponent
+            headers={["User ID", "Name", "Email", "Status", "Action"]}
+          >
             {paginatedUsers?.map((user, index) => (
               <tr key={index} className="border-b hover:bg-gray-100">
                 <td className="px-6 py-4">{user?.user_id}</td>
                 <td className="p-4">{user?.name}</td>
                 <td className="p-4">{user?.email}</td>
+                <td className="p-4">
+                  <span
+                    className={
+                      "px-2 py-1 text-xs font-medium rounded-full " +
+                      (user?.status === "Active"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800")
+                    }
+                  >
+                    {user?.status}
+                  </span>
+                </td>
                 <td className="p-4 w-32">
                   <div
                     className="flex items-center gap-2 relative cursor-pointer w-fit"
@@ -321,38 +376,14 @@ function UsersInformationComponent() {
             <span className="text-lg font-semibold">Confirm User Block</span>
           }
           open={!!selectedUser}
-          onOk={handleBlockUser}
-          onCancel={() => setSelectedUser(null)}
-          okText="Confirm Block"
-          okButtonProps={{
-            danger: true,
-            className:
-              "h-12 bg-red-500 hover:bg-red-600 text-white cursor-pointer",
+          onCancel={() => {
+            setSelectedUser(null);
           }}
-          cancelButtonProps={{
-            className: "h-12 border-gray-300 hover:bg-gray-50 cursor-pointer",
-          }}
-          cancelText="Cancel"
           centered
           width={600}
-          footer={[
-            <button
-              key="cancel"
-              onClick={() => setSelectedUser(null)}
-              className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>,
-            <button
-              key="block"
-              onClick={handleBlockUser}
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 ml-2 transition-colors cursor-pointer"
-            >
-              Confirm Block
-            </button>,
-          ]}
+          footer={null}
         >
-          <div className="py-4">
+          <div className="py-4 space-y-4">
             <div className="flex items-start">
               <div className="flex-shrink-0 pt-0.5">
                 <svg
@@ -369,7 +400,7 @@ function UsersInformationComponent() {
                   />
                 </svg>
               </div>
-              <div className="ml-3">
+              <div className="ml-3 bg-red-50 p-4 rounded-md w-full" >
                 <h3 className="text-lg font-medium text-gray-900">
                   Block User Confirmation
                 </h3>
@@ -381,6 +412,30 @@ function UsersInformationComponent() {
                 </div>
               </div>
             </div>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                key="cancel"
+                onClick={() => setSelectedUser(null)}
+                className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                key="block"
+                onClick={handleBlockUser}
+                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 ml-2 transition-colors cursor-pointer"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2 justify-center">
+                    <Loader className="animate-spin w-4 h-4" />
+                    Loading...
+                  </span>
+                ) : (
+                  "Confirm Block"
+                )}
+              </button>
+            </div>
           </div>
         </Modal>
 
@@ -389,38 +444,14 @@ function UsersInformationComponent() {
             <span className="text-lg font-semibold">Confirm User Deletion</span>
           }
           open={!!selectedUserDelete}
-          onOk={handleDeleteUser}
-          onCancel={() => setSelectedUserDelete(null)}
-          okText="Confirm Delete"
-          okButtonProps={{
-            danger: true,
-            className:
-              "h-12 bg-red-600 hover:bg-red-700 text-white cursor-pointer",
+          onCancel={() => {
+            setSelectedUserDelete(null);
           }}
-          cancelButtonProps={{
-            className: "h-12 border-gray-300 hover:bg-gray-50 cursor-pointer",
-          }}
-          cancelText="Cancel"
           centered
           width={600}
-          footer={[
-            <button
-              key="cancel"
-              onClick={() => setSelectedUserDelete(null)}
-              className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>,
-            <button
-              key="delete"
-              onClick={handleDeleteUser}
-              className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 ml-2 transition-colors cursor-pointer"
-            >
-              Confirm Delete
-            </button>,
-          ]}
+          footer={null}
         >
-          <div className="py-4">
+          <div className="py-4 space-y-4">
             <div className="flex items-start">
               <div className="flex-shrink-0 pt-0.5">
                 <svg
@@ -457,10 +488,34 @@ function UsersInformationComponent() {
                 </div>
               </div>
             </div>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                key="cancel"
+                onClick={() => setSelectedUserDelete(null)}
+                className="px-4 py-2 border rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                key="delete"
+                onClick={handleDeleteUser}
+                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 ml-2 transition-colors cursor-pointer"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2 justify-center">
+                    <Loader className="animate-spin w-4 h-4" />
+                    Loading...
+                  </span>
+                ) : (
+                  "Confirm Delete"
+                )}
+              </button>
+            </div>
           </div>
         </Modal>
       </div>
-      <LeaderboardComponent/>
+      <LeaderboardComponent />
     </div>
   );
 }

@@ -7,11 +7,13 @@ import { Pagination } from "antd";
 import Link from "next/link";
 import AddEdiTimeChallenges from "./AddEdiTimeChallenges";
 import DeleteModal from "@/sheard/DeleteModal";
+import { toast } from "sonner";
 
 export type Challenge = {
   id: string;
   missionName: string;
   totalPlayed: number;
+  points: number;
   totalQuestions: number;
   time: string;
   status: "Active" | "Inactive";
@@ -31,6 +33,7 @@ function TimeChallengesComponent() {
       id: "1",
       missionName: "Jungle Quiz Adventure",
       totalPlayed: 124,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -39,6 +42,7 @@ function TimeChallengesComponent() {
       id: "2",
       missionName: "Time Travel Trivia",
       totalPlayed: 89,
+      points: 500,
       totalQuestions: 15,
       status: "Active",
       time: "7 min",
@@ -47,6 +51,7 @@ function TimeChallengesComponent() {
       id: "3",
       missionName: "Underwater Wonders",
       totalPlayed: 77,
+      points: 500,
       totalQuestions: 8,
       status: "Inactive",
       time: "4 min",
@@ -55,6 +60,7 @@ function TimeChallengesComponent() {
       id: "4",
       missionName: "Space Explorer Challenge",
       totalPlayed: 142,
+      points: 500,
       totalQuestions: 12,
       status: "Active",
       time: "6 min",
@@ -63,6 +69,7 @@ function TimeChallengesComponent() {
       id: "5",
       missionName: "Wildlife Safari Quiz",
       totalPlayed: 56,
+      points: 500,
       totalQuestions: 10,
       status: "Inactive",
       time: "5 min",
@@ -71,6 +78,7 @@ function TimeChallengesComponent() {
       id: "6",
       missionName: "Ancient Egypt Quest",
       totalPlayed: 95,
+      points: 500,
       totalQuestions: 14,
       status: "Active",
       time: "7 min",
@@ -79,6 +87,7 @@ function TimeChallengesComponent() {
       id: "7",
       missionName: "Pirate Treasure Hunt",
       totalPlayed: 130,
+      points: 500,
       totalQuestions: 9,
       status: "Active",
       time: "5 min",
@@ -87,6 +96,7 @@ function TimeChallengesComponent() {
       id: "8",
       missionName: "Dino Discovery",
       totalPlayed: 101,
+      points: 500,
       totalQuestions: 11,
       status: "Inactive",
       time: "6 min",
@@ -95,6 +105,7 @@ function TimeChallengesComponent() {
       id: "9",
       missionName: "Brain Boost Marathon",
       totalPlayed: 215,
+      points: 500,
       totalQuestions: 20,
       status: "Active",
       time: "10 min",
@@ -103,6 +114,7 @@ function TimeChallengesComponent() {
       id: "10",
       missionName: "Solar System Sprint",
       totalPlayed: 80,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -111,6 +123,7 @@ function TimeChallengesComponent() {
       id: "11",
       missionName: "World Landmark Race",
       totalPlayed: 98,
+      points: 500,
       totalQuestions: 13,
       status: "Inactive",
       time: "6 min",
@@ -119,6 +132,7 @@ function TimeChallengesComponent() {
       id: "12",
       missionName: "Puzzle Island",
       totalPlayed: 67,
+      points: 500,
       totalQuestions: 9,
       status: "Inactive",
       time: "5 min",
@@ -127,6 +141,7 @@ function TimeChallengesComponent() {
       id: "13",
       missionName: "Mystery of the Pyramids",
       totalPlayed: 112,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -135,6 +150,7 @@ function TimeChallengesComponent() {
       id: "14",
       missionName: "Robot Lab Escape",
       totalPlayed: 145,
+      points: 500,
       totalQuestions: 12,
       status: "Active",
       time: "6 min",
@@ -143,6 +159,7 @@ function TimeChallengesComponent() {
       id: "15",
       missionName: "Haunted Mansion Trivia",
       totalPlayed: 79,
+      points: 500,
       totalQuestions: 8,
       status: "Inactive",
       time: "4 min",
@@ -151,6 +168,7 @@ function TimeChallengesComponent() {
       id: "16",
       missionName: "Color World Quiz",
       totalPlayed: 120,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -159,6 +177,7 @@ function TimeChallengesComponent() {
       id: "17",
       missionName: "Jungle Math Dash",
       totalPlayed: 150,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -167,6 +186,7 @@ function TimeChallengesComponent() {
       id: "18",
       missionName: "Spelling Bee Blitz",
       totalPlayed: 88,
+      points: 500,
       totalQuestions: 15,
       status: "Inactive",
       time: "7 min",
@@ -175,6 +195,7 @@ function TimeChallengesComponent() {
       id: "19",
       missionName: "Castle Logic Challenge",
       totalPlayed: 92,
+      points: 500,
       totalQuestions: 11,
       status: "Active",
       time: "6 min",
@@ -183,6 +204,7 @@ function TimeChallengesComponent() {
       id: "20",
       missionName: "Magic School Trivia",
       totalPlayed: 73,
+      points: 500,
       totalQuestions: 10,
       status: "Inactive",
       time: "5 min",
@@ -191,6 +213,7 @@ function TimeChallengesComponent() {
       id: "21",
       missionName: "Ocean Depths Quiz",
       totalPlayed: 107,
+      points: 500,
       totalQuestions: 13,
       status: "Active",
       time: "6 min",
@@ -199,6 +222,7 @@ function TimeChallengesComponent() {
       id: "22",
       missionName: "Sky High History",
       totalPlayed: 96,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -207,6 +231,7 @@ function TimeChallengesComponent() {
       id: "23",
       missionName: "Gadget Masterd",
       totalPlayed: 66,
+      points: 500,
       totalQuestions: 12,
       status: "Inactive",
       time: "6 min",
@@ -215,6 +240,7 @@ function TimeChallengesComponent() {
       id: "24",
       missionName: "Rainforest Run",
       totalPlayed: 125,
+      points: 500,
       totalQuestions: 14,
       status: "Active",
       time: "7 min",
@@ -223,6 +249,7 @@ function TimeChallengesComponent() {
       id: "25",
       missionName: "Volcano Blast Trivia",
       totalPlayed: 82,
+      points: 500,
       totalQuestions: 9,
       status: "Active",
       time: "5 min",
@@ -231,6 +258,7 @@ function TimeChallengesComponent() {
       id: "26",
       missionName: "Puzzle Pyramid",
       totalPlayed: 109,
+      points: 500,
       totalQuestions: 11,
       status: "Inactive",
       time: "6 min",
@@ -239,6 +267,7 @@ function TimeChallengesComponent() {
       id: "27",
       missionName: "City Explorer",
       totalPlayed: 133,
+      points: 500,
       totalQuestions: 13,
       status: "Active",
       time: "6 min",
@@ -247,6 +276,7 @@ function TimeChallengesComponent() {
       id: "28",
       missionName: "Ice Age Adventure",
       totalPlayed: 59,
+      points: 500,
       totalQuestions: 10,
       status: "Inactive",
       time: "5 min",
@@ -255,6 +285,7 @@ function TimeChallengesComponent() {
       id: "29",
       missionName: "Moonlight Quiz",
       totalPlayed: 140,
+      points: 500,
       totalQuestions: 12,
       status: "Active",
       time: "6 min",
@@ -263,6 +294,7 @@ function TimeChallengesComponent() {
       id: "29",
       missionName: "Treasure Trail Trivia",
       totalPlayed: 103,
+      points: 500,
       totalQuestions: 10,
       status: "Active",
       time: "5 min",
@@ -279,6 +311,7 @@ function TimeChallengesComponent() {
     setTimeout(() => {
       setIsLoading(false);
       setDeleteMissions("");
+      toast.success("Challenge deleted successfully");
     }, 2000);
   };
 
@@ -290,7 +323,7 @@ function TimeChallengesComponent() {
   return (
     <div className="rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-center justify-between p-5">
-        <h1 className="text-2xl font-bold">All Time Challenges</h1>
+        <h1 className="md:text-2xl text-xl font-bold">All Time Challenges</h1>
         <AdminButton
           label="Add Challenge"
           icon={<Plus className="w-6 h-6" />}
@@ -301,6 +334,7 @@ function TimeChallengesComponent() {
         headers={[
           "Challenge Name",
           "Total Played",
+          "Points",
           "Total Questions",
           "Time",
           "Status",
@@ -318,6 +352,7 @@ function TimeChallengesComponent() {
               </Link>
             </td>
             <td className="p-4">{mission?.totalPlayed}</td>
+            <td className="p-4">{mission?.points}</td>
             <td className="p-4">{mission?.totalQuestions}</td>
             <td className="p-4">{mission?.time}</td>
             <td className="p-4">

@@ -129,7 +129,7 @@ function LeaderboardComponent() {
   ];
   return (
     <div className="col-span-1 p-5 border border-gray-200 rounded-lg">
-      <h1 className="text-2xl font-bold pb-5">User Leaderboard</h1>
+      <h1 className="md:text-2xl text-xl font-bold pb-5">User Leaderboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 p-5 border border-gray-200 rounded-lg bg-gray-50">
         {["Today", "This Week", "All Time"].map((item, index) => (
           <button
@@ -145,7 +145,7 @@ function LeaderboardComponent() {
           </button>
         ))}
       </div>
-      <div className="flex justify-center items-end my-8">
+      <div className="sm:flex justify-center items-end my-8">
         {topPlayers.map((player) => (
           <div
             key={player.id}

@@ -2,13 +2,9 @@
 import { Form, Input, Modal } from "antd";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-type Challenge = {
-  id: string;
-  missionName: string;
-  totalPlayed: number;
-  totalQuestions: number;
-  status: "Active" | "Inactive";
-};
+import { toast } from "sonner";
+import { Challenge } from ".";
+
 interface Props {
   open: Challenge | string;
   setOpen: (open: Challenge | string) => void;
@@ -23,6 +19,7 @@ function AddEditMathMission({ open, setOpen }: Props) {
     setTimeout(() => {
       setIsLoading(false);
       setOpen("");
+      toast.success(`Mission ${typeof open === "object" ? "updated" : "added"} successfully`);
       form.resetFields();
     }, 2000);
   };
@@ -30,6 +27,9 @@ function AddEditMathMission({ open, setOpen }: Props) {
   useEffect(() => {
     if (open && (open as Challenge)?.missionName) {
       form.setFieldsValue({ missionName: (open as Challenge)?.missionName });
+    }
+    if (open && (open as Challenge)?.points) {
+      form.setFieldsValue({ points: (open as Challenge)?.points });
     }
   }, [open]);
 
@@ -56,6 +56,13 @@ function AddEditMathMission({ open, setOpen }: Props) {
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter mission name" className="h-12" />
+        </Form.Item>
+        <Form.Item
+          name="points"
+          label={<h2 className="text-lg font-semibold">Points</h2>}
+          rules={[{ required: true, message: "Please input your name!" }]}
+        >
+          <Input placeholder="Enter points" className="h-12" type="number" />
         </Form.Item>
         <button
           type="submit"

@@ -105,6 +105,37 @@ function Sidebar() {
     },
   ].filter((item) => item.roles.includes(role));
 
+  const activeMenu = (path: string) => {
+    const exactMatch = pathName === path;
+  
+    const subMenuMatchMap: Record<string, string[]> = {
+      "/admin/time_challenges": [
+        "/admin/time_challenges",
+        "/admin/time_challenges/",
+      ],
+      "/admin/math_missions": [
+        "/admin/math_missions",
+        "/admin/math_missions/",
+      ],
+      "/dashboard": [
+        "/dashboard/timed_challenges",
+        "/dashboard/timed_challenges/",
+        "/dashboard/math_missions",
+        "/dashboard/math_missions/",
+      ],
+      "/dashboard/practice": [
+        "/dashboard/practice",
+        "/dashboard/practice/",
+      ],
+    };
+  
+    const subMenus = subMenuMatchMap[path] || [];
+  
+    const isSubMenu = subMenus.some((subPath) => pathName.startsWith(subPath));
+  
+    return exactMatch || isSubMenu;
+  };
+  
   return (
     <>
       <div>
@@ -124,7 +155,7 @@ function Sidebar() {
               icon={item.icon}
               label={item.label}
               href={item.href}
-              active={pathName === item.href}
+              active={activeMenu(item.href)}
               textColor={item?.color}
             />
           ))}

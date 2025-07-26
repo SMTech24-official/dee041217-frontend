@@ -3,6 +3,7 @@ import { Form, Input, Modal } from "antd";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Challenge } from ".";
+import { toast } from "sonner";
 interface Props {
   open: Challenge | string;
   setOpen: (open: Challenge | string) => void;
@@ -18,6 +19,7 @@ function AddEdiTimeChallenges({ open, setOpen }: Props) {
       setIsLoading(false);
       setOpen("");  
       form.resetFields();
+      toast.success(`Challenge ${typeof open === "object" ? "updated" : "added"} successfully`);
     }, 2000);
   };
 
@@ -27,6 +29,9 @@ function AddEdiTimeChallenges({ open, setOpen }: Props) {
     }
     if (open && (open as Challenge)?.time) {
       form.setFieldsValue({ time: (open as Challenge)?.time });
+    }
+    if (open && (open as Challenge)?.points) {
+      form.setFieldsValue({ points: (open as Challenge)?.points });
     }
   }, [open]);
 
@@ -60,6 +65,13 @@ function AddEdiTimeChallenges({ open, setOpen }: Props) {
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter challenge time" className="h-12" />
+        </Form.Item>
+        <Form.Item
+          name="points"
+          label={<h2 className="text-lg font-semibold">Challenge Points</h2>}
+          rules={[{ required: true, message: "Please input your name!" }]}
+        >
+          <Input placeholder="Enter challenge points" className="h-12" type="number" />
         </Form.Item>
         <button
           type="submit"

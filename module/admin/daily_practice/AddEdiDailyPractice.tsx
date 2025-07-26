@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select } from "antd";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Question } from ".";
+import { toast } from "sonner";
 
 interface Props {
   open: Question | string;
@@ -18,7 +19,10 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
     setTimeout(() => {
       setIsLoading(false);
       setOpen("");
+      toast.success(`Question ${typeof open === "object" ? "updated" : "added"} successfully`);
       form.resetFields();
+      toast.success(`Question ${typeof open === "object" ? "updated" : "added"} successfully`);
+      
     }, 2000);
   };
 

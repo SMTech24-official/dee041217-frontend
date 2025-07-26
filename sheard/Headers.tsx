@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronLeft, LogOut, Settings, User } from "lucide-react";
+import { Bell, ChevronLeft, LogOut, Menu, Settings, User } from "lucide-react";
 import React from "react";
 import {
   DropdownMenu,
@@ -12,8 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import Sidebar from "./Sidebar";
 
 const Headers = () => {
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,7 +35,7 @@ const Headers = () => {
     "/dashboard/practice/division": "Division",
 
     //admin
-    "/admin": "Admin",
+    "/admin": "Admin Dashboard",
     "/admin/math_missions": "Math Missions",
     "/admin/time_challenges": "Time Challenges",
     "/admin/daily_practice": "Daily Practice",
@@ -55,8 +60,14 @@ const Headers = () => {
   }
 
   return (
-    <div className={`flex items-center justify-between p-4  border-b ${pathname.includes("admin") ? "bg-gray-100 border-gray-100" : "bg-white/10 border-white/10"}`}>
-      <div className="flex items-center gap-3">
+    <div
+      className={`flex items-center justify-between p-4  border-b ${
+        pathname.includes("admin")
+          ? "bg-gray-100 border-gray-100"
+          : "bg-white/10 border-white/10"
+      }`}
+    >
+      <div className="items-center gap-3 hidden md:flex">
         {pathname !== "/dashboard" &&
           pathname !== "/dashboard/math_missions" &&
           pathname !== "/admin" && (
@@ -68,34 +79,65 @@ const Headers = () => {
             </div>
           )}
         <div>
-          <h1 className={`text-2xl font-bold mb-1 ${pathname.includes("admin") ? "text-green-500" : "text-white"}`}>{name}</h1>
-          <p className={` text-sm md:text-base ${pathname.includes("admin") ? "text-green-500" : "text-purple-200"}`}>
+          <h1
+            className={`text-2xl font-bold mb-1 ${
+              pathname.includes("admin") ? "text-green-500" : "text-white"
+            }`}
+          >
+            {name}
+          </h1>
+          <p
+            className={` text-sm md:text-base ${
+              pathname.includes("admin") ? "text-green-500" : "text-purple-200"
+            }`}
+          >
             Here Is Your Analytics
           </p>
         </div>
       </div>
+      <div className="md:hidden flex justify-between items-center">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <button
+              className={`bg-green-500/20 rounded-lg h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${
+                pathname.includes("admin")
+                  ? "text-green-500 hover:text-white"
+                  : "text-white "
+              }`}
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </SheetTrigger>
+          <SheetContent
+            side="left"
+            className="bg-gray-100 w-64 p-6 border-r border-gray-100"
+          >
+            <Sidebar />
+          </SheetContent>
+        </Sheet>
+      </div>
 
       <div className="flex items-center gap-3">
-        { !pathname.includes("admin") && (
-          <button
-            className="bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer"
-            aria-label="User menu"
-          >
-            <Settings className="h-6 w-6 text-white" />
-          </button>
-        )}
-          <button
-            className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${pathname.includes("admin") ? "text-green-500 hover:text-white" : "text-white "}`}
-            aria-label="User menu"
-          >
-            <Bell className="h-6 w-6" />
-          </button>
+        <button
+          className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${
+            pathname.includes("admin")
+              ? "text-green-500 hover:text-white"
+              : "text-white "
+          }`}
+          aria-label="User menu"
+        >
+          <Bell className="h-6 w-6" />
+        </button>
 
         {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${pathname.includes("admin") ? "text-green-500 hover:text-white" : "text-white"}`}
+              className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${
+                pathname.includes("admin")
+                  ? "text-green-500 hover:text-white"
+                  : "text-white"
+              }`}
               aria-label="User menu"
             >
               <User className="h-6 w-6" />

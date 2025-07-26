@@ -77,7 +77,7 @@ function SubscriptionComponent() {
   return (
     <div className="rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-center justify-between p-5">
-        <h1 className="text-2xl font-bold">All Subscriptions Plan</h1>
+        <h1 className="md:text-2xl text-xl font-bold">All Subscriptions Plan</h1>
         <AdminButton
           label="Subscription"
           icon={<Plus className="w-6 h-6" />}

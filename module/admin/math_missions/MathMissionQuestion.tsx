@@ -8,6 +8,7 @@ import AddEditMathMission from "./AddEditMathMission";
 import DeleteModal from "@/sheard/DeleteModal";
 import { Challenge } from ".";
 import AddEdiDailyPractice from "../daily_practice/AddEdiDailyPractice";
+import { toast } from "sonner";
 
 export type Question = {
   QNo: string;
@@ -372,13 +373,13 @@ function MathMissionQuestion({id}: {id: string}) {
       setQuestions((prev) => prev.filter((mission) => mission.QNo !== id));
       setIsLoading(false);
       setDeleteMissions("");
+      toast.success("Question deleted successfully");
     }, 1000);
   };
   const index = (page - 1) * limit;
   const paginatedQuestions = questions.slice(index, index + limit);
   const total = questions.length;
 
-  console.log(open);
   return (
     <div className="rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-center justify-between p-5">

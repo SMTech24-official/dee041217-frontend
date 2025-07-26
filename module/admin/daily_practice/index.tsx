@@ -5,6 +5,7 @@ import { useState } from "react";
 import QuestionsTable from "@/sheard/QuestionsTable";
 import DeleteModal from "@/sheard/DeleteModal";
 import AddEdiDailyPractice from "./AddEdiDailyPractice";
+import { toast } from "sonner";
 
 export type Question = {
   QNo: string;
@@ -378,6 +379,7 @@ function DailyPracticeComponent() {
       setQuestions((prev) => prev.filter((mission) => mission.QNo !== id));
       setIsLoading(false);
       setDeleteMissions("");
+      toast.success("Question deleted successfully");
     }, 1000);
   };
 
@@ -389,7 +391,7 @@ function DailyPracticeComponent() {
   return (
     <div className="rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-center justify-between p-5">
-        <h1 className="text-2xl font-bold">All Daily Practice</h1>
+        <h1 className="md:text-2xl text-xl font-bold">All Daily Practice</h1>
         <AdminButton
           label="Add Question"
           icon={<Plus className="w-6 h-6" />}

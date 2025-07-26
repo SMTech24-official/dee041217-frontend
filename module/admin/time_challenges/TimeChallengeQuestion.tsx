@@ -6,6 +6,7 @@ import QuestionsTable from "@/sheard/QuestionsTable";
 import { useSearchParams } from "next/navigation";
 import DeleteModal from "@/sheard/DeleteModal";
 import AddEdiDailyPractice from "../daily_practice/AddEdiDailyPractice";
+import { toast } from "sonner";
 
 export type Question = {
   QNo: string;
@@ -378,6 +379,8 @@ function TimeChallengeQuestion({ id }: { id: string }) {
     setTimeout(() => {
       setQuestions((prev) => prev.filter((item) => item.QNo !== id));
       setIsLoading(false);
+      setDeleteMissions("");
+      toast.success("Question deleted successfully");
     }, 1000);
   };
   const index = (page - 1) * limit;
