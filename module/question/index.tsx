@@ -216,7 +216,7 @@ function QuestionComponent({ id }: { id: string }) {
               className={`mt-4 px-4 py-5 rounded-xl transition duration-300 flex-1 ${
                 isFirstQuestion
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : " bg-blue-500 hover:bg-blue-600 text-white"
+                  : " bg-blue-500 hover:bg-blue-600 text-white cursor-pointer"
               }`}
             >
               Previous
