@@ -13,51 +13,53 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/auth_text.png";
-import { useAppSelector } from "@/redux/hooks";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { removeCookie } from "@/utils/cookies";
 
 function Sidebar() {
   const pathName = usePathname();
-  // const role = useAppSelector(selectCurrentUser)?.role || "STUDENT";
-  const role = "STUDENT";
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const role = useAppSelector(selectCurrentUser)?.role || "USER";
 
   const sidebarItems = [
     {
       icon: <LayoutDashboard size={18} />,
       label: "Home",
       href: "/dashboard",
-      roles: ["STUDENT"],
+      roles: ["USER"],
       color: "text-black md:text-white",
     },
     {
       icon: <FileText size={18} />,
       label: "Practice",
       href: "/dashboard/practice",
-      roles: ["STUDENT"],
+      roles: ["USER"],
       color: "text-black md:text-white",
     },
     {
       icon: <BookType size={18} />,
       label: "Leaderboard",
       href: "/dashboard/leaderboard",
-      roles: ["STUDENT"],
+      roles: ["USER"],
       color: "text-black md:text-white",
     },
     {
       icon: <BarChart2 size={18} />,
       label: "Progress Report",
       href: "/dashboard/progress_report",
-      roles: ["STUDENT", "PARENT"],
+      roles: ["USER", "PARENT"],
       color: "text-black md:text-white",
     },
     {
       icon: <UserCog size={18} />,
       label: "Profile",
       href: "/dashboard/profile",
-      roles: ["STUDENT", "PARENT"],
+      roles: ["USER", "PARENT"],
       color: "text-black md:text-white",
     },
     // ADMIN
@@ -107,35 +109,35 @@ function Sidebar() {
 
   const activeMenu = (path: string) => {
     const exactMatch = pathName === path;
-  
+
     const subMenuMatchMap: Record<string, string[]> = {
       "/admin/time_challenges": [
         "/admin/time_challenges",
         "/admin/time_challenges/",
       ],
-      "/admin/math_missions": [
-        "/admin/math_missions",
-        "/admin/math_missions/",
-      ],
+      "/admin/math_missions": ["/admin/math_missions", "/admin/math_missions/"],
       "/dashboard": [
         "/dashboard/timed_challenges",
         "/dashboard/timed_challenges/",
         "/dashboard/math_missions",
         "/dashboard/math_missions/",
       ],
-      "/dashboard/practice": [
-        "/dashboard/practice",
-        "/dashboard/practice/",
-      ],
+      "/dashboard/practice": ["/dashboard/practice", "/dashboard/practice/"],
     };
-  
+
     const subMenus = subMenuMatchMap[path] || [];
-  
+
     const isSubMenu = subMenus.some((subPath) => pathName.startsWith(subPath));
-  
+
     return exactMatch || isSubMenu;
   };
-  
+
+  const handleLogOut = () => {
+    dispatch(logout());
+    removeCookie("token");
+    router.push("/login");
+  };
+
   return (
     <>
       <div>
@@ -160,12 +162,13 @@ function Sidebar() {
             />
           ))}
         </nav>
+        <button
+          onClick={handleLogOut}
+          className="flex gap-3 items-center  font-medium text-base cursor-pointer text-red-500 ml-4 mt-4"
+        >
+          <LogOut size={18} /> Logout
+        </button>
       </div>
-      <SidebarItem
-        icon={<LogOut size={18} />}
-        label="Logout"
-        textColor="text-red-500"
-      />
     </>
   );
 }

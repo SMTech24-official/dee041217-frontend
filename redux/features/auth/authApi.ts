@@ -1,143 +1,77 @@
-import { baseApi } from "../../api/baseApi";
+import baseApi from "@/redux/api/baseApi";
 
-const authApi = baseApi.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: (userInfo: { email: string; password: string }) => {
-        return {
-          url: "/auth/login",
-          method: "POST",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    loginWithGoogle: builder.mutation({
-      query: (userInfo) => {
-        console.log({ userInfo });
-        return {
-          url: "google-login",
-          method: "POST",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    forgotPassword: builder.mutation({
-      query: (userInfo: { email: string }) => {
-        return {
-          url: "/auth/forget-password",
-          method: "POST",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    resetPassword: builder.mutation({
-      query: (userInfo: { email: string; token: string; password: string }) => {
-        return {
-          url: "/auth/reset-password",
-          method: "POST",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    updateUser: builder.mutation({
-      query: (userInfo) => {
-        return {
-          url: "user/me",
-          method: "PATCH",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    updateCompany: builder.mutation({
-      query: (userInfo) => {
-        return {
-          url: "company/update",
-          method: "put",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    updateProfile: builder.mutation({
-      query: (userInfo) => {
-        return {
-          url: "auth/update-profile",
-          method: "PUT",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
-    changePassword: builder.mutation({
-      query: (userInfo) => {
-        return {
-          url: "auth/change-password",
-          method: "PUT",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
+      query: (credentials) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["User"],
     }),
     register: builder.mutation({
-      query: (userInfo: {
-        name: string;
-        email: string;
-        password: string;
-        phone: string;
-      }) => {
-        return {
-          url: "/client/signup",
-          method: "POST",
-          body: userInfo,
-        };
-      },
-      invalidatesTags: ["user"],
+      query: (data) => ({
+        url: "/users/register",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
-    otp: builder.mutation({
-      query: (userInfo: { email: string; code: string; purpose: string }) => {
-        return {
-          url: "/auth/verify-otp",
-          method: "POST",
-          body: userInfo,
-        };
-      },
+    socialAuth: builder.mutation({
+      query: (data) => ({
+        url: "/auth/social-login",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
-    otpResendCode: builder.mutation({
-      query: (userInfo: { email: string; purpose: string }) => {
-        return {
-          url: "/auth/resend-otp",
-          method: "POST",
-          body: userInfo,
-        };
-      },
+    sendOtp: builder.mutation({
+      query: (email) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body: email,
+      }),
     }),
     getMe: builder.query({
       query: () => ({
-        url: "/auth/get-me",
+        url: "/users/me",
         method: "GET",
       }),
-      providesTags: ["user"],
+      providesTags: ["User"],
+    }),
+    verifyOtp: builder.mutation({
+      query: (data: { email: string; otp: string }) => ({
+        url: "/auth/verify-otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (data: { password: string }) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url: "/users/profile",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
 export const {
   useLoginMutation,
-  useLoginWithGoogleMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
   useRegisterMutation,
-  useUpdateUserMutation,
-  useOtpMutation,
-  useOtpResendCodeMutation,
   useGetMeQuery,
-  useLazyGetMeQuery,
-  useUpdateCompanyMutation,
-  useUpdateProfileMutation,
-  useChangePasswordMutation,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+  useResetPasswordMutation,
+  useUpdateUserMutation,
+  useSocialAuthMutation,
 } = authApi;

@@ -18,20 +18,25 @@ import { z } from "zod";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader, } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { varifyToken } from "@/utils/verifyToken";
+import { setUser, TUser } from "@/redux/features/auth/authSlice";
+import { setCookie } from "@/utils/cookies";
+import { useAppDispatch } from "@/redux/hooks";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 function LoginComponent() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const [login] = useLoginMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,14 +45,28 @@ function LoginComponent() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("✅ Submitted Data:", data);
-    setIsLoading(true);
-    setTimeout(() => {
-      toast.success("Login successful");
-      setIsLoading(false);
-      router.push("/dashboard");
-    }, 2000);
+  const onSubmit = async (data: any) => {
+    const toastId = toast.loading("login...");
+
+    try {
+      const res = await login(data).unwrap();
+      const user = varifyToken(res.data.token) as TUser;
+
+      setCookie(res.data.token);
+      dispatch(setUser({ user, token: res.data.token }));
+
+      toast.success("Login success", { id: toastId });
+
+      setTimeout(() => {
+        if (user?.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
+      }, 1000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to login", { id: toastId });
+    }
   };
 
   return (
