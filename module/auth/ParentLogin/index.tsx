@@ -1,3 +1,4 @@
+// app/(auth)/login/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -17,16 +18,25 @@ import { z } from "zod";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { varifyToken } from "@/utils/verifyToken";
+import { setUser, TUser } from "@/redux/features/auth/authSlice";
+import { setCookie } from "@/utils/cookies";
+import { useAppDispatch } from "@/redux/hooks";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-function ParentLoginComponent() {
+function LoginComponent() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const [login] = useLoginMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,13 +45,28 @@ function ParentLoginComponent() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("✅ Submitted Data:", data);
-    setIsLoading(true);
-    setTimeout(() => {
-      toast.success("Login successful");
-      setIsLoading(false);
-    }, 2000);
+  const onSubmit = async (data: any) => {
+    const toastId = toast.loading("login...");
+
+    try {
+      const res = await login({ ...data, participant: "PARENT"}).unwrap();
+      const user = varifyToken(res.data.token) as TUser;
+
+      setCookie(res.data.token);
+      dispatch(setUser({ user, token: res.data.token }));
+
+      toast.success("Login success", { id: toastId });
+
+      setTimeout(() => {
+        if (user?.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
+      }, 1000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to login", { id: toastId });
+    }
   };
 
   return (
@@ -54,9 +79,9 @@ function ParentLoginComponent() {
         className="w-[300px] md:w-[220px] lg:w-[360px]"
       />
       <h1 className="text-2xl md:text-5xl font-bold text-shadow-xl text-shadow-[0_6px_0_0_#157a9c]">
-        Welcome Back!
+        Login to Your Account
       </h1>
-      <p>Please log in to access your account.</p>
+      <p>Access your dashboard and continue your progress.</p>
 
       <div className="w-full md:w-xl mx-auto">
         <Form {...form}>
@@ -157,4 +182,4 @@ function ParentLoginComponent() {
   );
 }
 
-export default ParentLoginComponent;
+export default LoginComponent;

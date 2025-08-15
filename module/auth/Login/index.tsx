@@ -49,7 +49,7 @@ function LoginComponent() {
     const toastId = toast.loading("login...");
 
     try {
-      const res = await login(data).unwrap();
+      const res = await login({ ...data, participant: "STUDENT" }).unwrap();
       const user = varifyToken(res.data.token) as TUser;
 
       setCookie(res.data.token);

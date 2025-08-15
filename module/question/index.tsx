@@ -1,7 +1,9 @@
 "use client";
+import Spinner from "@/components/common/Spinner";
 import { Progress } from "@/components/ui/progress";
+import { useSingleMathMissionQuery } from "@/redux/features/math/math.api";
 import { Check, Loader, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -11,15 +13,12 @@ interface Question {
   correctAnswer: string;
 }
 
-function QuestionComponent({ id }: { id: string }) {
+function QuestionComponent() {
+  const { question } = useParams<{ question: string }>();
   const pathname = usePathname();
   const challengeType = pathname?.includes("timed_challenges");
-
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
   const [time, setTime] = useState<number>(180);
-  
-
-  console.log(id);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [answeredQuestions, setAnsweredQuestions] = useState<
@@ -27,6 +26,10 @@ function QuestionComponent({ id }: { id: string }) {
   >({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { data, isFetching } = useSingleMathMissionQuery(question, {
+    skip: !question,
+  });
+  console.log(data?.data?.mathMissionQuestions);
   const questions: Question[] = [
     {
       question:
@@ -76,6 +79,10 @@ function QuestionComponent({ id }: { id: string }) {
     }
   };
 
+  if (isFetching) {
+    return <Spinner />;
+  }
+
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       const newIndex = currentQuestionIndex - 1;
@@ -115,11 +122,10 @@ function QuestionComponent({ id }: { id: string }) {
         return 0;
       });
     }, 1000);
-  
+
     setTimerId(id); // Save interval ID
     return () => clearInterval(id); // Clear on unmount
   }, []);
-  
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -129,7 +135,8 @@ function QuestionComponent({ id }: { id: string }) {
     return `${m} : ${s}`;
   };
 
-  const handleSetCurrentQuestionIndex = () => {setIsLoading(true);
+  const handleSetCurrentQuestionIndex = () => {
+    setIsLoading(true);
     console.log(answeredQuestions);
     setTimeout(() => {
       setIsLoading(false);
@@ -139,8 +146,7 @@ function QuestionComponent({ id }: { id: string }) {
       toast.success("Question submitted successfully");
     }, 2000);
   };
-  
-  
+
   return (
     <div className="max-w-xl mx-auto flex items-center justify-center flex-col gap-5">
       {challengeType && (
@@ -148,7 +154,10 @@ function QuestionComponent({ id }: { id: string }) {
           <p className=" whitespace-nowrap font-semibold bg-gradient-to-b from-[#1DE5B1] to-[#1BA570] hover:from-[#1DE5B1] hover:to-[#1BA570] p-3 rounded text-2xl w-full text-center">
             {formatTime(time)}
           </p>
-          <button onClick={handleSetCurrentQuestionIndex} className="w-16 h-14 flex items-center justify-center rounded-full bg-white hover:bg-red-500 hover:text-white cursor-pointer transition duration-300 text-black">
+          <button
+            onClick={handleSetCurrentQuestionIndex}
+            className="w-16 h-14 flex items-center justify-center rounded-full bg-white hover:bg-red-500 hover:text-white cursor-pointer transition duration-300 text-black"
+          >
             <X />
           </button>
         </div>

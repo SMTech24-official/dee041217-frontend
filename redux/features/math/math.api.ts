@@ -1,11 +1,18 @@
 import baseApi from "@/redux/api/baseApi";
 import { TQueryParams } from "@/type/globalType";
 
-export const dashboardApi = baseApi.injectEndpoints({
+export const mathApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    overView: builder.query({
+    mathMission: builder.query({
       query: () => ({
-        url: "/dashboard/admin",
+        url: "/math-mission",
+        method: "GET",
+      }),
+    }),
+
+    singleMathMission: builder.query({
+      query: (id) => ({
+        url: `/math-mission/${id}`,
         method: "GET",
       }),
     }),
@@ -45,5 +52,4 @@ export const dashboardApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useOverViewQuery, useAllUserQuery, useMyProfileQuery, useBlockUserMutation } =
-  dashboardApi;
+export const { useMathMissionQuery, useSingleMathMissionQuery } = mathApi;
