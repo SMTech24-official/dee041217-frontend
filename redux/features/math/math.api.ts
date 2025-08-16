@@ -1,5 +1,4 @@
 import baseApi from "@/redux/api/baseApi";
-import { TQueryParams } from "@/type/globalType";
 
 export const mathApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,39 +16,34 @@ export const mathApi = baseApi.injectEndpoints({
       }),
     }),
 
-    allUser: builder.query({
-      query: (args) => {
-        const params = new URLSearchParams();
-
-        if (args) {
-          args.forEach((item: TQueryParams) => {
-            params.append(item.name, item.value as string);
-          });
-        }
-        return {
-          url: "/users",
-          method: "GET",
-          params: params,
-        };
-      },
-      providesTags: ["User"],
+    submitResult: builder.mutation({
+      query: (data) => ({
+        url: `/math-mission-players`,
+        method: "POST",
+        body: data,
+      }),
     }),
 
-    myProfile: builder.query({
+    timeMission: builder.query({
       query: () => ({
-        url: "/users/profile",
+        url: "/time-challenge",
         method: "GET",
       }),
     }),
 
-    blockUser: builder.mutation({
+    singleTimeMission: builder.query({
       query: (id) => ({
-        url: `/users/${id}`,
-        method: "PATCH",
+        url: `/time-challenge/${id}`,
+        method: "GET",
       }),
-      invalidatesTags: ["User"],
     }),
   }),
 });
 
-export const { useMathMissionQuery, useSingleMathMissionQuery } = mathApi;
+export const {
+  useMathMissionQuery,
+  useSingleMathMissionQuery,
+  useSubmitResultMutation,
+  useTimeMissionQuery,
+  useSingleTimeMissionQuery
+} = mathApi;

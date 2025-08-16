@@ -6,15 +6,20 @@ import avatar_3 from "@/assets/images/math_3.png";
 import avatar_4 from "@/assets/images/math_4.png";
 import { Check, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMathMissionQuery } from "@/redux/features/math/math.api";
+import {
+  useMathMissionQuery,
+  useTimeMissionQuery,
+} from "@/redux/features/math/math.api";
 import Spinner from "@/components/common/Spinner";
 
 function MathMissionsComponent({ type }: { type?: string }) {
   const { data, isFetching } = useMathMissionQuery(undefined);
+  const { data: timeData, isFetching: timeFetching } =
+    useTimeMissionQuery(undefined);
   const router = useRouter();
   const avatars = [avatar_1, avatar_2, avatar_3, avatar_4];
 
-  const mathMissions = data?.data?.result;
+  const mathMissions = type ? timeData?.data?.result : data?.data?.result;
 
   // Define only 4 positions that will cycle repeatedly
   const basePlatformPositions = [
