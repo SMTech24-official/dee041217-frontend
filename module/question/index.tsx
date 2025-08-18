@@ -6,6 +6,7 @@ import {
   useSingleMathMissionQuery,
   useSingleTimeMissionQuery,
   useSubmitResultMutation,
+  useSubmitTimeResultMutation,
 } from "@/redux/features/math/math.api";
 import { Check, X, Loader } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
@@ -25,19 +26,21 @@ interface MathMissionQuestion {
 }
 
 function QuestionComponent() {
-  const { question } = useParams<{ question: string }>();
-  const { time_challenges } = useParams<{ question: string }>();
+  const { question, time_challenges } = useParams<{
+    question: string;
+    time_challenges: string;
+  }>();
   const pathname = usePathname();
   const challengeType = pathname?.includes("timed_challenges");
   const [time, setTime] = useState<number>(180);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<any>(null);
   const [open, setOpen] = useState(false);
 
   const [submitResult] = useSubmitResultMutation();
+  const [submitTimeResult] = useSubmitTimeResultMutation();
 
   const { data, isFetching } = useSingleMathMissionQuery(question, {
     skip: !question || challengeType,
@@ -55,15 +58,37 @@ function QuestionComponent() {
   const currentQuestion = questions[currentIndex];
   const isLast = currentIndex === questions.length - 1;
   const isFirst = currentIndex === 0;
-  console.log(timeData);
 
+  // Timer from API
   useEffect(() => {
-    if (!challengeType) return;
+    if (!challengeType || !timeData?.data?.timeLimit) return;
+
+    setTime(timeData.data.timeLimit * 60);
+
     const id = setInterval(() => {
-      setTime((t) => (t > 0 ? t - 1 : 0));
+      setTime((t) => {
+        if (t <= 1) {
+          clearInterval(id);
+          handleSubmit();
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
+
     return () => clearInterval(id);
-  }, [challengeType]);
+  }, [challengeType, timeData?.data?.timeLimit]);
+
+  const handleRestart = () => {
+    setCurrentIndex(0);
+    setAnswers({});
+    setResult(null);
+    setOpen(false);
+
+    if (challengeType && timeData?.data?.timeLimit) {
+      setTime(timeData.data.timeLimit * 60);
+    }
+  };
 
   const formatTime = (seconds: number) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -73,16 +98,13 @@ function QuestionComponent() {
 
   const handleAnswer = (option: string) => {
     if (!answers[currentIndex]) {
-      setSelectedAnswer(option);
       setAnswers((prev) => ({ ...prev, [currentIndex]: option }));
     }
   };
 
   const handlePrevious = () => {
     if (!isFirst) {
-      const prevIndex = currentIndex - 1;
-      setCurrentIndex(prevIndex);
-      setSelectedAnswer(answers[prevIndex] || null);
+      setCurrentIndex((prev) => prev - 1);
     }
   };
 
@@ -102,7 +124,9 @@ function QuestionComponent() {
     });
 
     return {
-      mathMissionId: question,
+      ...(challengeType
+        ? { timeChallengeId: time_challenges }
+        : { mathMissionId: question }),
       totalPoints,
       totalCorrect,
       totalSkipped,
@@ -111,15 +135,28 @@ function QuestionComponent() {
   };
 
   const handleSubmit = async () => {
+    if (isLoading) return;
     setIsLoading(true);
-    const result = calculateResult();
-    const res = await submitResult({ ...result }).unwrap();
+    try {
+      const result = calculateResult();
+      let res;
 
-    if (res) {
+      if (challengeType) {
+        res = await submitTimeResult(result).unwrap();
+      } else {
+        res = await submitResult(result).unwrap();
+      }
+
+      if (res) {
+        setResult(result);
+        setOpen(true);
+        toast.success("Question submitted successfully");
+      }
+    } catch (err) {
+      console.error("Submit failed", err);
+      toast.error("Failed to submit results");
+    } finally {
       setIsLoading(false);
-      setResult(result);
-      setOpen(true);
-      toast.success("Question submitted successfully");
     }
   };
 
@@ -276,12 +313,19 @@ function QuestionComponent() {
               </div>
             )}
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex justify-center gap-3">
               <Dialog.Close asChild>
                 <button className="px-5 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl">
                   Close
                 </button>
               </Dialog.Close>
+
+              <button
+                onClick={handleRestart}
+                className="px-5 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl"
+              >
+                Restart
+              </button>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

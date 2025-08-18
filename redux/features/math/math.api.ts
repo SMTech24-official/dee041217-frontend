@@ -37,6 +37,14 @@ export const mathApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    submitTimeResult: builder.mutation({
+      query: (data) => ({
+        url: `/time-challenge-players`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -45,5 +53,6 @@ export const {
   useSingleMathMissionQuery,
   useSubmitResultMutation,
   useTimeMissionQuery,
-  useSingleTimeMissionQuery
+  useSingleTimeMissionQuery,
+  useSubmitTimeResultMutation,
 } = mathApi;
