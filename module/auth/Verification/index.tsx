@@ -11,14 +11,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/features/auth/authApi";
 
 const formSchema = z.object({
-  code: z.string().min(6, "Verification code must be 6 characters"),
+  code: z.string().min(4, "Verification code must be 6 characters"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 function VerificationComponent() {
+  const router = useRouter();
+  const email = useSearchParams().get("email");
+  const type = useSearchParams().get("type");
+  const [verify] = useVerifyOtpMutation();
+  const [reSendOtp] = useSendOtpMutation();
+
   const {
     control,
     handleSubmit,
@@ -30,8 +42,36 @@ function VerificationComponent() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("✅ Submitted Code:", data.code);
+  const onSubmit = async (data: FormData) => {
+    const toastId = toast.loading("Verifying...");
+
+    const code = parseInt(data.code);
+
+    try {
+      await verify({ email: email!, otp: code }).unwrap();
+
+      toast.success("Verification success", { id: toastId });
+
+      if (type === "forgot") {
+        router.push(`/reset_password?email=${email}`);
+      } else {
+        router.push("/login");
+      }
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to Verify", { id: toastId });
+    }
+  };
+
+  const handleReSubmit = async () => {
+    const toastId = toast.loading("Resending...");
+
+    try {
+      await reSendOtp({ email: email! }).unwrap();
+
+      toast.success("Resend success", { id: toastId });
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to Resend", { id: toastId });
+    }
   };
 
   return (
@@ -48,7 +88,7 @@ function VerificationComponent() {
         Enter Verification Code
       </h1>
       <p className="text-center text-base  max-w-md">
-        Please check your email and enter the 6-digit verification code we sent.
+        Please check your email and enter the 4-digit verification code we sent.
       </p>
 
       <form
@@ -81,14 +121,6 @@ function VerificationComponent() {
                   index={3}
                   className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-[#ff7e5f] rounded-xl text-xl text-center bg-white text-black"
                 />
-                <InputOTPSlot
-                  index={4}
-                  className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-[#ff7e5f] rounded-xl text-xl text-center bg-white text-black"
-                />
-                <InputOTPSlot
-                  index={5}
-                  className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-[#ff7e5f] rounded-xl text-xl text-center bg-white text-black"
-                />
               </InputOTPGroup>
             </InputOTP>
           )}
@@ -101,14 +133,16 @@ function VerificationComponent() {
           type="submit"
           className="w-full h-16 md:h-14 rounded-full text-lg font-bold text-white
                  bg-gradient-to-b from-[#36d1dc] to-[#1e90b7]
-                shadow-[0_6px_0_0_#157a9c] hover:brightness-110 transition-all duration-300"
+                shadow-[0_6px_0_0_#157a9c] hover:brightness-110 transition-all duration-300 cursor-pointer"
         >
           Apply Code
         </Button>
         <Button
+          type="button"
           className="w-full h-16 md:h-14 rounded-full text-lg font-bold text-white
                 bg-gradient-to-b from-[#ff7e5f] to-[#eb3b5a]
-                shadow-[0_6px_0_0_#c2334a] hover:brightness-110 transition-all duration-300"
+                shadow-[0_6px_0_0_#c2334a] hover:brightness-110 transition-all duration-300 cursor-pointer"
+          onClick={handleReSubmit}
         >
           Send Email Again
         </Button>

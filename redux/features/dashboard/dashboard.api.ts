@@ -5,7 +5,7 @@ export const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     overView: builder.query({
       query: () => ({
-        url: "/dashboard/admin",
+        url: "/users/user/count",
         method: "GET",
       }),
     }),
@@ -28,12 +28,7 @@ export const dashboardApi = baseApi.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    myProfile: builder.query({
-      query: () => ({
-        url: "/users/profile",
-        method: "GET",
-      }),
-    }),
+
 
     blockUser: builder.mutation({
       query: (id) => ({
@@ -45,5 +40,5 @@ export const dashboardApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useOverViewQuery, useAllUserQuery, useMyProfileQuery, useBlockUserMutation } =
+export const { useOverViewQuery, useAllUserQuery, useBlockUserMutation } =
   dashboardApi;

@@ -18,11 +18,13 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
+import { useSendOtpMutation } from "@/redux/features/auth/authApi";
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 const ForgotPasswordComponent = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [reSendOtp] = useSendOtpMutation();
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -31,14 +33,18 @@ const ForgotPasswordComponent = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("✅ Submitted Data:", data);
-    setIsLoading(true);
-    setTimeout(() => {
-      toast.success("Login successful");
-      setIsLoading(false);
-      router.push("/reset_password?email=" + data.email);
-    }, 2000);
+  const onSubmit = async (data: any) => {
+    const toastId = toast.loading("Processing...");
+
+    try {
+      await reSendOtp(data).unwrap();
+
+      toast.success("Process success", { id: toastId });
+
+      router.push(`/verification?email=${data.email}&type=forgot`);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to Process", { id: toastId });
+    }
   };
 
   return (

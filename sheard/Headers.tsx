@@ -117,7 +117,7 @@ const Headers = () => {
         </Sheet>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <button
           className={`bg-green-500/20 rounded-full h-10 w-10 flex items-center justify-center hover:bg-green-500 transition duration-300 cursor-pointer ${
             pathname.includes("admin")
@@ -129,7 +129,6 @@ const Headers = () => {
           <Bell className="h-6 w-6" />
         </button>
 
-        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -168,7 +167,7 @@ const Headers = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </div> */}
     </div>
   );
 };

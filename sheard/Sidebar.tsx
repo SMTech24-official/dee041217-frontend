@@ -135,7 +135,7 @@ function Sidebar() {
   const handleLogOut = () => {
     dispatch(logout());
     removeCookie("token");
-    router.push("/login");
+    router.push("/");
   };
 
   return (

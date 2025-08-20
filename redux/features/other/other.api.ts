@@ -34,8 +34,27 @@ export const mathApi = baseApi.injectEndpoints({
       },
       providesTags: ["User"],
     }),
+
+    userReport: builder.query({
+      query: () => ({
+        url: `/users/report`,
+        method: "GET",
+      }),
+    }),
+
+    avatars: builder.query({
+      query: () => ({
+        url: `/auth/avatars`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useAllTopicQuery, useTopicQuestionQuery, useLeaderBoardQuery } =
-  mathApi;
+export const {
+  useAllTopicQuery,
+  useTopicQuestionQuery,
+  useLeaderBoardQuery,
+  useUserReportQuery,
+  useAvatarsQuery,
+} = mathApi;

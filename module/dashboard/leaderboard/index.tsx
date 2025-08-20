@@ -1,15 +1,11 @@
 "use client";
 
-import { Crown, ChevronUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import top from "@/assets/images/top.png";
-import profile from "@/assets/images/leader_2.png";
-import profile_1 from "@/assets/images/leader.png";
-import profile_2 from "@/assets/images/leader_1.png";
 import { useLeaderBoardQuery } from "@/redux/features/other/other.api";
 import Spinner from "@/components/common/Spinner";
 import { useState } from "react";
-import Pagination from "@/components/common/Pagination";
+import Pagination from "@/components/common/MyPagination";
 
 export default function LeaderboardComponent() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,49 +34,91 @@ export default function LeaderboardComponent() {
     <div className="w-full md:w-7/12 mx-auto p-5 mt-48 sm:mt-0 h-full flex items-center justify-center flex-col gap-5 md:gap-10">
       <div className="relative z-10 p-6 pt-10 w-full">
         {/* Top 3 Players */}
-
-        <div className="sm:flex justify-center items-end my-8">
-          {topPlayers.map((player: any, idx: number) => (
-            <div
-              key={player.id}
-              className={`flex flex-col items-center mx-4 ${
-                idx === 0 ? "mb-20" : ""
-              }`}
-            >
-              {idx === 0 && (
-                <div className="mb-2">
-                  <Image
-                    width={400}
-                    height={400}
-                    src={top}
-                    alt={player.fullName}
-                    className="w-20 object-cover"
-                  />
-                </div>
-              )}
-
+        <div className="flex md:gap-5 gap-2 justify-evenly md:mb-0 mb-2">
+          <div className="sm:flex justify-center items-end my-8">
+            <div className={`flex flex-col items-center mx-4 `}>
               <div
-                className={`relative rounded-full flex items-center justify-center mb-2 ${
-                  idx === 0 ? "w-44 h-44" : "w-40 h-40"
-                }`}
+                className={`relative rounded-full flex items-center justify-center mb-2 md:w-40 w-12 md:h-40 h-12`}
               >
                 <Image
                   width={400}
                   height={400}
-                  src={player?.avatar?.imageUrl}
-                  alt={player.fullName}
+                  src={topPlayers[1]?.avatar?.imageUrl}
+                  alt={topPlayers[1]?.fullName}
                   className="w-full h-full rounded-full object-fill"
                 />
               </div>
 
               <div className="text-center">
-                <div className="font-semibold text-sm">{player.fullName}</div>
+                <div className="font-semibold text-sm">
+                  {topPlayers[1]?.fullName}
+                </div>
                 <div className="text-xs opacity-80">
-                  Level: {player.level} | Coin: {player.point}
+                  Level: {topPlayers[1]?.level} | Coin: {topPlayers[1]?.point}
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="sm:flex justify-center items-end md:mb-28">
+            <div className={`flex flex-col items-center mx-4 `}>
+              <div className="mb-2">
+                <Image
+                  width={400}
+                  height={400}
+                  src={top}
+                  alt={topPlayers[0]?.fullName}
+                  className="w-20 object-cover"
+                />
+              </div>
+
+              <div
+                className={`relative rounded-full flex items-center justify-center mb-2 md:w-40 w-16 md:h-40 h-16`}
+              >
+                <Image
+                  width={400}
+                  height={400}
+                  src={topPlayers[0]?.avatar?.imageUrl}
+                  alt={topPlayers[0]?.fullName}
+                  className="w-full h-full rounded-full object-fill"
+                />
+              </div>
+
+              <div className="text-center">
+                <div className="font-semibold text-sm">
+                  {topPlayers[0]?.fullName}
+                </div>
+                <div className="text-xs opacity-80">
+                  Level: {topPlayers[0]?.level} | Coin: {topPlayers[0]?.point}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="sm:flex justify-center items-end my-8">
+            <div className={`flex flex-col items-center mx-4 `}>
+              <div
+                className={`relative rounded-full flex items-center justify-center mb-2 md:w-40 w-12 md:h-40 h-12`}
+              >
+                <Image
+                  width={400}
+                  height={400}
+                  src={topPlayers[2]?.avatar?.imageUrl}
+                  alt={topPlayers[2]?.fullName}
+                  className="w-full h-full rounded-full object-fill"
+                />
+              </div>
+
+              <div className="text-center">
+                <div className="font-semibold text-sm">
+                  {topPlayers[2]?.fullName}
+                </div>
+                <div className="text-xs opacity-80">
+                  Level: {topPlayers[2]?.level} | Coin: {topPlayers[2]?.point}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Leaderboard Panel */}
@@ -98,10 +136,10 @@ export default function LeaderboardComponent() {
                   />
                   <div>
                     <div className="font-semibold text-gray-800 text-lg">
-                      Darrell Steward
+                      {entry?.fullName}
                     </div>
                     <p className="text-gray-500 text-sm">
-                      Level: 22 | Coin: 2000
+                      Level: {entry?.level} | Coin: {entry?.point}
                     </p>
                   </div>
                 </div>

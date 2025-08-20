@@ -18,7 +18,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 const formSchema = z
   .object({
     newPassword: z.string().min(8, "Password must be at least 8 characters"),
@@ -33,6 +34,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 function ResetPasswordComponent() {
   const router = useRouter();
+  const email = useSearchParams().get("email");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<{
     newPassword: boolean;
@@ -41,6 +43,8 @@ function ResetPasswordComponent() {
     newPassword: false,
     confirmPassword: false,
   });
+  const [reset] = useResetPasswordMutation();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,14 +53,22 @@ function ResetPasswordComponent() {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("✅ Submitted Data:", data);
-    setIsLoading(true);
-    setTimeout(() => {
-      toast.success("Password reset successful");
-      setIsLoading(false);
+  const onSubmit = async (data: FormValues) => {
+    const toastId = toast.loading("Reseating...");
+
+    if (data.newPassword !== data.confirmPassword) {
+      return toast.error("Wrong Confirm Password", { id: toastId });
+    }
+
+    try {
+      await reset({ email: email!, password: data.confirmPassword }).unwrap();
+
+      toast.success("Reset success", { id: toastId });
+
       router.push("/login");
-    }, 2000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to Reset", { id: toastId });
+    }
   };
 
   return (

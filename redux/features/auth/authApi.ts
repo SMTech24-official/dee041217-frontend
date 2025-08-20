@@ -35,20 +35,20 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getMe: builder.query({
       query: () => ({
-        url: "/users/me",
+        url: "/auth/profile",
         method: "GET",
       }),
       providesTags: ["User"],
     }),
     verifyOtp: builder.mutation({
-      query: (data: { email: string; otp: string }) => ({
+      query: (data: { email: string; otp: number }) => ({
         url: "/auth/verify-otp",
         method: "POST",
         body: data,
       }),
     }),
     resetPassword: builder.mutation({
-      query: (data: { password: string }) => ({
+      query: (data) => ({
         url: "/auth/reset-password",
         method: "POST",
         body: data,

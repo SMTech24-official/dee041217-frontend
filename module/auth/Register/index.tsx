@@ -20,6 +20,7 @@ import { Eye, EyeOff, Loader } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
 
 const formSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters"),
@@ -28,9 +29,10 @@ const formSchema = z.object({
 });
 
 function RegisterComponent() {
-    const router = useRouter();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [register] = useRegisterMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,14 +42,20 @@ function RegisterComponent() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("✅ Submitted Data:", data);
-    setIsLoading(true);
-    setTimeout(() => {
-      toast.success("Register successful");
-      setIsLoading(false);
-      router.push("/verification");
-    }, 2000);
+  const onSubmit = async (data: any) => {
+    const toastId = toast.loading("Registering...");
+
+    try {
+      const res = await register({ ...data, role: "USER" }).unwrap();
+
+      if (res.success === true) {
+        toast.success("Registration success", { id: toastId });
+
+        router.push(`/verification?email=${data.email}`);
+      }
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to Register", { id: toastId });
+    }
   };
 
   return (
