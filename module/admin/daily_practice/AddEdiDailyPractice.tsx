@@ -4,35 +4,99 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Question } from ".";
 import { toast } from "sonner";
+import {
+  useAddMathQuestionMutation,
+  useUpdateMathQuestionMutation,
+} from "@/redux/features/question/question";
+import { useAllTopicQuery } from "@/redux/features/other/other.api";
+import { useParams } from "next/navigation";
 
 interface Props {
   open: Question | string;
   setOpen: (open: Question | string) => void;
 }
+
 function AddEdiDailyPractice({ open, setOpen }: Props) {
   const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleAddEditUser = (values: any) => {
-    console.log(values);
+  const [isLoading, setIsLoading] = useState(false);
+  const { question } = useParams();
+  const [update] = useUpdateMathQuestionMutation();
+  const [add] = useAddMathQuestionMutation();
+  const { data } = useAllTopicQuery(undefined);
 
+  const handleAddEditUser = async (values: any) => {
+    const toastId = toast.loading("Saving...");
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      if (open === "add") {
+        await add({
+          title: values.title,
+          option1: values.option1,
+          option2: values.option2,
+          option3: values.option3,
+          option4: values.option4,
+          correctAnswer: values.correctAnswer,
+          point: parseInt(values.point),
+          type: values.type,
+          difficulty: values.difficulty.toUpperCase(),
+          topicId: values.topicId,
+          mathMissionId: question,
+        }).unwrap();
+      } else {
+        await update({
+          id: (open as Question).id,
+          data: {
+            title: values.title,
+            option1: values.option1,
+            option2: values.option2,
+            option3: values.option3,
+            option4: values.option4,
+            correctAnswer: values.correctAnswer,
+            point: parseInt(values.point),
+            type: values.type,
+            difficulty: values.difficulty.toUpperCase(),
+            topicId: values.topicId,
+          },
+        }).unwrap();
+      }
+
+      toast.success(
+        `Question ${
+          typeof open === "object" ? "updated" : "added"
+        } successfully`,
+        { id: toastId }
+      );
+
       setOpen("");
-      toast.success(`Question ${typeof open === "object" ? "updated" : "added"} successfully`);
       form.resetFields();
-      toast.success(`Question ${typeof open === "object" ? "updated" : "added"} successfully`);
-      
-    }, 2000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to save", { id: toastId });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     if (typeof open === "object" && open !== null) {
-      console.log(open);
-      form.setFieldsValue(open);
+      form.setFieldsValue({
+        title: open.title,
+        option1: open.option1,
+        option2: open.option2,
+        option3: open.option3,
+        option4: open.option4,
+        correctAnswer: open.correctAnswer,
+        point: open.point,
+        type: open.type,
+        difficulty: open.difficulty,
+        topicId: open.topic?.id,
+      });
     }
-  }, [open]);
+  }, [open, form]);
 
+  const options = data?.data?.map((item: any) => {
+    return { label: item?.title, value: item?.id };
+  });
   return (
     <Modal
       title={
@@ -52,45 +116,37 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
       <Form onFinish={handleAddEditUser} layout="vertical" form={form}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
           <Form.Item
-            name="questionType"
-            label={<h2 className="text-lg font-semibold">Question Type</h2>}
+            name="type"
+            label="Question Type"
             rules={[
               { required: true, message: "Please select question type!" },
             ]}
           >
             <Select
-              placeholder="Select Question Type"
-              options={[
-                { label: "Simple", value: "Simple" },
-                { label: "Story", value: "Story" },
-              ]}
+              placeholder="Select Type"
+              options={[{ label: "MCQ", value: "MCQ" }]}
               style={{ height: "48px" }}
             />
           </Form.Item>
 
           <Form.Item
-            name="questionTopic"
-            label={<h2 className="text-lg font-semibold">Question Topic</h2>}
+            name="topicId"
+            label="Question Topic"
             rules={[
               { required: true, message: "Please select question topic!" },
             ]}
           >
             <Select
-              placeholder="Select Question Topic"
-              options={[
-                { label: "Addition", value: "Addition" },
-                { label: "Subtraction", value: "Subtraction" },
-                { label: "Multiplication", value: "Multiplication" },
-                { label: "Division", value: "Division" },
-              ]}
+              placeholder="Select Topic"
+              options={options}
               style={{ height: "48px" }}
             />
           </Form.Item>
         </div>
 
         <Form.Item
-          name="question"
-          label={<h2 className="text-lg font-semibold">Add Question</h2>}
+          name="title"
+          label="Question"
           rules={[{ required: true, message: "Please input your question!" }]}
         >
           <Input.TextArea placeholder="Enter your question" rows={4} />
@@ -101,7 +157,7 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
             <Form.Item
               key={opt}
               name={opt}
-              label={<h2 className="text-lg font-semibold">Option {i + 1}</h2>}
+              label={`Option ${i + 1}`}
               rules={[
                 { required: true, message: `Please input option ${i + 1}!` },
               ]}
@@ -111,27 +167,37 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
           ))}
 
           <Form.Item
-            name="answer"
-            label={<h2 className="text-lg font-semibold">Answer</h2>}
-            rules={[{ required: true, message: "Please input answer!" }]}
+            name="correctAnswer"
+            label="Correct Answer"
+            rules={[
+              { required: true, message: "Please input the correct answer!" },
+            ]}
           >
-            <Input placeholder="Enter answer" className="h-12" />
+            <Input placeholder="Enter correct answer" className="h-12" />
           </Form.Item>
 
           <Form.Item
-            name="level"
-            label={<h2 className="text-lg font-semibold">Level</h2>}
-            rules={[{ required: true, message: "Please select level!" }]}
+            name="difficulty"
+            label="Difficulty"
+            rules={[{ required: true, message: "Please select difficulty!" }]}
           >
             <Select
-              placeholder="Select Level"
+              placeholder="Select Difficulty"
               options={[
-                { label: "Easy", value: "Easy" },
-                { label: "Medium", value: "Medium" },
-                { label: "Hard", value: "Hard" },
+                { label: "Easy", value: "EASY" },
+                { label: "Medium", value: "MEDIUM" },
+                { label: "Hard", value: "HARD" },
               ]}
               style={{ height: "48px" }}
             />
+          </Form.Item>
+
+          <Form.Item
+            name="point"
+            label="Points"
+            rules={[{ required: true, message: "Please input points!" }]}
+          >
+            <Input type="number" placeholder="Enter points" className="h-12" />
           </Form.Item>
         </div>
 
@@ -147,8 +213,10 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
               <Loader className="w-6 h-6 animate-spin" />
               Loading...
             </span>
+          ) : typeof open === "object" ? (
+            "Update Question"
           ) : (
-            typeof open === "object" ? "Edit Question" : "Add New Question"
+            "Add New Question"
           )}
         </button>
       </Form>

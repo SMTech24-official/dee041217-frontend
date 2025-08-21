@@ -8,15 +8,20 @@ import AddEdiDailyPractice from "./AddEdiDailyPractice";
 import { toast } from "sonner";
 
 export type Question = {
-  QNo: string;
-  Question: string;
-  Option1: string;
-  Option2: string;
-  Option3: string;
-  Option4: string;
-  Answer: string;
-  Level: "Easy" | "Medium" | "Hard";
-  Type: "Simple" | "Story";
+  id: string;
+  title: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  correctAnswer: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD"; 
+  topic: {
+    id: string;
+    title: string;
+  };
+  point: number;
+  type: string; 
 };
 
 function DailyPracticeComponent() {
@@ -376,7 +381,7 @@ function DailyPracticeComponent() {
   const handleDeleteMissions = (id: string) => {
     setIsLoading(true);
     setTimeout(() => {
-      setQuestions((prev) => prev.filter((mission) => mission.QNo !== id));
+      setQuestions((prev) => prev.filter((mission) => mission.id !== id));
       setIsLoading(false);
       setDeleteMissions("");
       toast.success("Question deleted successfully");
@@ -399,7 +404,7 @@ function DailyPracticeComponent() {
         />
       </div>
       <QuestionsTable
-        data={paginatedQuestions}
+        id={paginatedQuestions}
         page={page}
         limit={limit}
         total={total}
@@ -414,12 +419,12 @@ function DailyPracticeComponent() {
         open={deleteMissions ? "add" : ""}
         setOpen={() => setDeleteMissions("")}
         name={
-          typeof deleteMissions === "object" ? deleteMissions?.QNo || "" : ""
+          typeof deleteMissions === "object" ? deleteMissions?.id || "" : ""
         }
         handleDelete={() =>
           typeof deleteMissions === "object" &&
           deleteMissions &&
-          handleDeleteMissions(deleteMissions.QNo)
+          handleDeleteMissions(deleteMissions.id)
         }
         isLoading={isLoading}
       />

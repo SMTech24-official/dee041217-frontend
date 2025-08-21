@@ -4,6 +4,7 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Challenge } from ".";
 import { toast } from "sonner";
+import { useAddTimeMissionMutation, useUpdateTimeMissionMutation } from "@/redux/features/dashboard/dashboard.api";
 interface Props {
   open: Challenge | string;
   setOpen: (open: Challenge | string) => void;
@@ -11,27 +12,54 @@ interface Props {
 function AddEdiTimeChallenges({ open, setOpen }: Props) {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleAddEditUser = (values: any) => {
-    console.log(values);
+  const [update] = useUpdateTimeMissionMutation();
+  const [add] = useAddTimeMissionMutation();
 
+  const handleAddEditUser = async (values: any) => {
+    const toastId = toast.loading("Updating...");
     setIsLoading(true);
-    setTimeout(() => {
+
+    try {
+      if (open === "add") {
+        await add({
+          title: values.title,
+          totalPoints: parseInt(values.totalPoints),
+        }).unwrap();
+      } else {
+        await update({
+          id: (open as Challenge).id,
+          data: {
+            title: values.title,
+            totalPoints: parseInt(values.totalPoints),
+          },
+        }).unwrap();
+      }
+
+      toast.success(
+        `Mission ${
+          typeof open === "object" ? "updated" : "added"
+        } successfully`,
+        { id: toastId }
+      );
+
       setIsLoading(false);
-      setOpen("");  
+      setOpen("");
+
       form.resetFields();
-      toast.success(`Challenge ${typeof open === "object" ? "updated" : "added"} successfully`);
-    }, 2000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to update", { id: toastId });
+    }
   };
 
   useEffect(() => {
-    if (open && (open as Challenge)?.missionName) {
-      form.setFieldsValue({ missionName: (open as Challenge)?.missionName });
+    if (open && (open as Challenge)?.title) {
+      form.setFieldsValue({ title: (open as Challenge)?.title });
     }
-    if (open && (open as Challenge)?.time) {
-      form.setFieldsValue({ time: (open as Challenge)?.time });
+    if (open && (open as Challenge)?.timeLimit) {
+      form.setFieldsValue({ timeLimit: (open as Challenge)?.timeLimit });
     }
-    if (open && (open as Challenge)?.points) {
-      form.setFieldsValue({ points: (open as Challenge)?.points });
+    if (open && (open as Challenge)?.totalPoints) {
+      form.setFieldsValue({ totalPoints: (open as Challenge)?.totalPoints });
     }
   }, [open]);
 
@@ -53,25 +81,29 @@ function AddEdiTimeChallenges({ open, setOpen }: Props) {
     >
       <Form onFinish={handleAddEditUser} layout="vertical" form={form}>
         <Form.Item
-          name="missionName"
+          name="title"
           label={<h2 className="text-lg font-semibold">Challenge Name</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter challenge name" className="h-12" />
         </Form.Item>
         <Form.Item
-          name="time"
+          name="timeLimit"
           label={<h2 className="text-lg font-semibold">Challenge Time</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter challenge time" className="h-12" />
         </Form.Item>
         <Form.Item
-          name="points"
+          name="totalPoints"
           label={<h2 className="text-lg font-semibold">Challenge Points</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
-          <Input placeholder="Enter challenge points" className="h-12" type="number" />
+          <Input
+            placeholder="Enter challenge points"
+            className="h-12"
+            type="number"
+          />
         </Form.Item>
         <button
           type="submit"

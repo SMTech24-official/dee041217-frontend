@@ -1,34 +1,42 @@
 import { Pencil, Trash2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import TableComponent from "./TableComponent";
 import { Pagination } from "antd";
 import { Question } from "@/module/admin/daily_practice";
+import { useMathQuestionsQuery } from "@/redux/features/question/question";
+import Spinner from "@/components/common/Spinner";
+import MyPagination from "@/components/common/MyPagination";
 interface Props {
-  data: Question[];
-  page: number;
-  limit: number;
-  total: number;
-  index: number;
-  handlePaginationChange: (page: number) => void;
+  id: string;
   setOpen: (open: Question | string) => void;
   setDeleteMissions: (deleteMissions: Question | string) => void;
 }
 
-function QuestionsTable({
-  data,
-  page,
-  limit,
-  total,
-  index,
-  handlePaginationChange,
-  setOpen,
-  setDeleteMissions
-}: Props) {
+function QuestionsTable({ id, setOpen, setDeleteMissions }: Props) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: allData, isFetching } = useMathQuestionsQuery([
+    { name: "mathMissionId", value: id },
+    { name: "limit", value: 10 },
+    { name: "page", value: String(currentPage) },
+  ]);
+
+  const data = allData?.data?.allQuestions;
+
+  const metaData = {
+    page: allData?.data?.page,
+    limit: allData?.data?.limit,
+    total: allData?.data?.total,
+  };
+
+  if (isFetching) {
+    return <Spinner />;
+  }
+
   return (
     <>
       <TableComponent
         headers={[
-          "QNo",
+          "Q-Id",
           "Question",
           "Option1",
           "Option2",
@@ -40,39 +48,41 @@ function QuestionsTable({
           "Action",
         ]}
       >
-        {data?.map((question, index) => (
-          <tr key={index} className="border-b hover:bg-gray-100">
-            <td className="px-6 py-4">{question?.QNo}</td>
-            <td className="p-4">{question?.Question}</td>
-            <td className="p-4">{question?.Option1}</td>
-            <td className="p-4">{question?.Option2}</td>
-            <td className="p-4">{question?.Option3}</td>
-            <td className="p-4">{question?.Option4}</td>
-            <td className="p-4">{question?.Answer}</td>
+        {data?.map((question: any) => (
+          <tr key={question?.id} className="border-b hover:bg-gray-100">
+            <td className="px-6 py-4">Q-{question?.id.slice(-5)}</td>
+            <td className="p-4">{question?.title}</td>
+            <td className="p-4">{question?.option1}</td>
+            <td className="p-4">{question?.option2}</td>
+            <td className="p-4">{question?.option3}</td>
+            <td className="p-4">{question?.option4}</td>
+            <td className="p-4">{question?.correctAnswer}</td>
             <td className="p-4">
               <div
                 className={`px-3 py-1 rounded-full font-medium w-fit border-dotted border-2 ${
-                  question?.Level === "Easy"
+                  question?.difficulty === "EASY"
                     ? "bg-green-50 border-green-500 text-green-500"
-                    : question?.Level === "Medium"
+                    : question?.difficulty === "MEDIUM"
                     ? "bg-yellow-50 border-yellow-500 text-yellow-500"
                     : "bg-red-50 border-red-500 text-red-500"
                 }`}
               >
-                {question?.Level}
+                {question?.difficulty}
               </div>
             </td>
             <td className="p-4">
               <div
                 className={`px-3 py-1 rounded-full font-medium w-fit border-dotted border-2 ${
-                  question?.Type === "Simple"
+                  question?.topic?.title === "Division"
                     ? "bg-green-50 border-green-500 text-green-500"
-                    : question?.Type === "Story"
+                    : question?.topic?.title === "Addition"
                     ? "bg-blue-50 border-blue-500 text-blue-500"
+                    : question?.topic?.title === "Subtraction"
+                    ? "bg-red-50 border-yellow-500 text-yellow-500"
                     : "bg-red-50 border-red-500 text-red-500"
                 }`}
               >
-                {question?.Type}
+                {question?.topic?.title}
               </div>
             </td>
             <td className="p-4 w-32">
@@ -98,16 +108,14 @@ function QuestionsTable({
       </TableComponent>
       <div className="p-4 w-full md:flex justify-between items-center space-y-4 md:space-y-0">
         <p className="text-sm text-green-500 font-semibold">
-          Showing {index + 1} to {Math.min(index + limit, total)} of {total}{" "}
+          Showing {metaData?.page} to {metaData?.limit} of {metaData?.total}{" "}
           entries
         </p>
-
-        <Pagination
-          current={page}
-          pageSize={limit}
-          total={total}
-          onChange={handlePaginationChange}
-          className="custom-pagination"
+        <MyPagination
+          currentPage={metaData?.page}
+          totalItem={metaData?.total}
+          limit={10}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
     </>

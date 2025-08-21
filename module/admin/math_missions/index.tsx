@@ -3,289 +3,65 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import AdminButton from "@/components/ui/AdminButton";
 import { useState } from "react";
 import TableComponent from "@/sheard/TableComponent";
-import { Pagination } from "antd";
 import Link from "next/link";
 import AddEditMathMission from "./AddEditMathMission";
 import DeleteModal from "@/sheard/DeleteModal";
 import { toast } from "sonner";
+import {
+  useDeleteMathMissionMutation,
+  useMathMissionQuery,
+} from "@/redux/features/dashboard/dashboard.api";
+import Spinner from "@/components/common/Spinner";
+import MyPagination from "@/components/common/MyPagination";
 
 export type Challenge = {
   id: string;
-  missionName: string;
+  title: string;
   totalPlayed: number;
-  points: number;
+  totalPoints: number;
   totalQuestions: number;
   status: "Active" | "Inactive";
 };
 
 function MathMissionsComponent() {
+  const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState<Challenge | string>("");
   const [deleteMissions, setDeleteMissions] = useState<Challenge | string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const limit = 10;
+  const [deleteMission] = useDeleteMathMissionMutation();
 
-  const [missions, setMissions] = useState<Challenge[]>([
-    {
-      id: "1",
-      missionName: "Jungle Quiz Adventure",
-      totalPlayed: 124,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "2",
-      missionName: "Time Travel Trivia",
-      totalPlayed: 89,
-      points: 500,
-      totalQuestions: 15,
-      status: "Active",
-    },
-    {
-      id: "3",
-      missionName: "Underwater Wonders",
-      totalPlayed: 77,
-      points: 500,
-      totalQuestions: 8,
-      status: "Inactive",
-    },
-    {
-      id: "4",
-      missionName: "Space Explorer Challenge",
-      totalPlayed: 142,
-      points: 500,
-      totalQuestions: 12,
-      status: "Active",
-    },
-    {
-      id: "5",
-      missionName: "Wildlife Safari Quiz",
-      totalPlayed: 56,
-      points: 500,
-      totalQuestions: 10,
-      status: "Inactive",
-    },
-    {
-      id: "6",
-      missionName: "Ancient Egypt Quest",
-      totalPlayed: 95,
-      points: 500,
-      totalQuestions: 14,
-      status: "Active",
-    },
-    {
-      id: "7",
-      missionName: "Pirate Treasure Hunt",
-      totalPlayed: 130,
-      points: 500,
-      totalQuestions: 9,
-      status: "Active",
-    },
-    {
-      id: "8",
-      missionName: "Dino Discovery",
-      totalPlayed: 101,
-      points: 500,
-      totalQuestions: 11,
-      status: "Inactive",
-    },
-    {
-      id: "9",
-      missionName: "Brain Boost Marathon",
-      totalPlayed: 215,
-      points: 500,
-      totalQuestions: 20,
-      status: "Active",
-    },
-    {
-      id: "10",
-      missionName: "Solar System Sprint",
-      totalPlayed: 80,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "11",
-      missionName: "World Landmark Race",
-      totalPlayed: 98,
-      points: 500,
-      totalQuestions: 13,
-      status: "Inactive",
-    },
-    {
-      id: "12",
-      missionName: "Puzzle Island",
-      totalPlayed: 67,
-      points: 500,
-      totalQuestions: 9,
-      status: "Inactive",
-    },
-    {
-      id: "13",
-      missionName: "Mystery of the Pyramids",
-      totalPlayed: 112,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "14",
-      missionName: "Robot Lab Escape",
-      totalPlayed: 145,
-      points: 500,
-      totalQuestions: 12,
-      status: "Active",
-    },
-    {
-      id: "15",
-      missionName: "Haunted Mansion Trivia",
-      totalPlayed: 79,
-      points: 500,
-      totalQuestions: 8,
-      status: "Inactive",
-    },
-    {
-      id: "16",
-      missionName: "Color World Quiz",
-      totalPlayed: 120,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "17",
-      missionName: "Jungle Math Dash",
-      totalPlayed: 150,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "18",
-      missionName: "Spelling Bee Blitz",
-      totalPlayed: 88,
-      points: 500,
-      totalQuestions: 15,
-      status: "Inactive",
-    },
-    {
-      id: "19",
-      missionName: "Castle Logic Challenge",
-      totalPlayed: 92,
-      points: 500,
-      totalQuestions: 11,
-      status: "Active",
-    },
-    {
-      id: "20",
-      missionName: "Magic School Trivia",
-      totalPlayed: 73,
-      points: 500,
-      totalQuestions: 10,
-      status: "Inactive",
-    },
-    {
-      id: "21",
-      missionName: "Ocean Depths Quiz",
-      totalPlayed: 107,
-      points: 500,
-      totalQuestions: 13,
-      status: "Active",
-    },
-    {
-      id: "22",
-      missionName: "Sky High History",
-      totalPlayed: 96,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
-    {
-      id: "23",
-      missionName: "Gadget Mastermind",
-      totalPlayed: 66,
-      points: 500,
-      totalQuestions: 12,
-      status: "Inactive",
-    },
-    {
-      id: "24",
-      missionName: "Rainforest Run",
-      totalPlayed: 125,
-      points: 500,
-      totalQuestions: 14,
-      status: "Active",
-    },
-    {
-      id: "25",
-      missionName: "Volcano Blast Trivia",
-      totalPlayed: 82,
-      points: 500,
-      totalQuestions: 9,
-      status: "Active",
-    },
-    {
-      id: "26",
-      missionName: "Puzzle Pyramid",
-      totalPlayed: 109,
-      points: 500,
-      totalQuestions: 11,
-      status: "Inactive",
-    },
-    {
-      id: "27",
-      missionName: "City Explorer",
-      totalPlayed: 133,
-      points: 500,
-      totalQuestions: 13,
-      status: "Active",
-    },
-    {
-      id: "28",
-      missionName: "Ice Age Adventure",
-      totalPlayed: 59,
-      points: 500,
-      totalQuestions: 10,
-      status: "Inactive",
-    },
-    {
-      id: "29",
-      missionName: "Moonlight Quiz",
-      totalPlayed: 140,
-      points: 500,
-      totalQuestions: 12,
-      status: "Active",
-    },
-    {
-      id: "30",
-      missionName: "Treasure Trail Trivia",
-      totalPlayed: 103,
-      points: 500,
-      totalQuestions: 10,
-      status: "Active",
-    },
+  const { data, isFetching } = useMathMissionQuery([
+    { name: "limit", value: 10 },
+    { name: "page", value: String(currentPage) },
   ]);
 
-  const handlePaginationChange = (page: number) => {
-    setPage(page);
-  };
-
-  const handleDeleteMissions = (id: string) => {
-    console.log(id);
+  const handleDeleteMissions = async (id: string) => {
+    const toastId = toast.loading("Updating...");
     setIsLoading(true);
-    setTimeout(() => {
+    console.log(id);
+    try {
+      await deleteMission(id).unwrap();
+
+      toast.success(`Mission deleted successfully`, { id: toastId });
       setIsLoading(false);
       setDeleteMissions("");
-      toast.success("Mission deleted successfully");
-    }, 2000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to update", { id: toastId });
+    }
   };
-  const index = (page - 1) * limit;
-  const paginatedMissions = missions.slice(index, index + limit);
-  const total = missions.length;
 
-  console.log(open);
+  const missions = data?.data?.result;
+
+  const metaData = {
+    page: data?.data?.page,
+    limit: data?.data?.limit,
+    total: data?.data?.total,
+  };
+
+  if (isFetching) {
+    return <Spinner />;
+  }
+
   return (
     <div className="rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-center justify-between p-5">
@@ -306,23 +82,23 @@ function MathMissionsComponent() {
           "Action",
         ]}
       >
-        {paginatedMissions?.map((mission, index) => (
-          <tr key={index} className="border-b hover:bg-gray-100">
+        {missions?.map((mission: any) => (
+          <tr key={mission?.id} className="border-b hover:bg-gray-100">
             <td className="px-6 py-4">
               <Link
-                href={`/admin/math_missions/${mission?.id}?name=${mission?.missionName}`}
+                href={`/admin/math_missions/${mission?.id}?name=${mission?.title}`}
                 className="hover:text-green-500 cursor-pointer transition duration-300 ease-in-out hover:underline"
               >
-                {mission?.missionName}
+                {mission?.title}
               </Link>
             </td>
-            <td className="p-4">{mission?.totalPlayed}</td>
-            <td className="p-4">{mission?.points}</td>
+            <td className="p-4">{mission?.totalPlayers}</td>
+            <td className="p-4">{mission?.totalPoints}</td>
             <td className="p-4">{mission?.totalQuestions}</td>
             <td className="p-4">
               <div
                 className={`px-3 py-1 rounded-full font-medium w-fit border-dotted border-2 ${
-                  mission?.status === "Active"
+                  mission?.status === "ACTIVE"
                     ? "bg-green-50 border-green-500 text-green-500"
                     : "bg-red-50 border-red-500 text-red-500"
                 }`}
@@ -353,16 +129,14 @@ function MathMissionsComponent() {
       </TableComponent>
       <div className="p-4 w-full md:flex justify-between items-center space-y-4 md:space-y-0">
         <p className="text-sm text-green-500 font-semibold">
-          Showing {index + 1} to {Math.min(index + limit, total)} of {total}{" "}
+          Showing {metaData?.page} to {metaData?.limit} of {metaData?.total}{" "}
           entries
         </p>
-
-        <Pagination
-          current={page}
-          pageSize={limit}
-          total={total}
-          onChange={handlePaginationChange}
-          className="custom-pagination"
+        <MyPagination
+          currentPage={metaData?.page}
+          totalItem={metaData?.total}
+          limit={10}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
       <AddEditMathMission setOpen={setOpen} open={open} />
@@ -371,9 +145,7 @@ function MathMissionsComponent() {
         open={deleteMissions ? "add" : ""}
         setOpen={() => setDeleteMissions("")}
         name={
-          typeof deleteMissions === "object"
-            ? deleteMissions?.missionName || ""
-            : ""
+          typeof deleteMissions === "object" ? deleteMissions?.title || "" : ""
         }
         handleDelete={() =>
           typeof deleteMissions === "object" &&

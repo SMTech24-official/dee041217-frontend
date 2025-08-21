@@ -4,6 +4,10 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Challenge } from ".";
+import {
+  useAddMathMissionMutation,
+  useUpdateMathMissionMutation,
+} from "@/redux/features/dashboard/dashboard.api";
 
 interface Props {
   open: Challenge | string;
@@ -12,24 +16,51 @@ interface Props {
 function AddEditMathMission({ open, setOpen }: Props) {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [update] = useUpdateMathMissionMutation();
+  const [add] = useAddMathMissionMutation();
 
-  const handleAddEditUser = (values: any) => {
-    console.log(values);
+  const handleAddEditUser = async (values: any) => {
+    const toastId = toast.loading("Updating...");
     setIsLoading(true);
-    setTimeout(() => {
+
+    try {
+      if (open === "add") {
+        await add({
+          title: values.title,
+          totalPoints: parseInt(values.totalPoints),
+        }).unwrap();
+      } else {
+        await update({
+          id: (open as Challenge).id,
+          data: {
+            title: values.title,
+            totalPoints: parseInt(values.totalPoints),
+          },
+        }).unwrap();
+      }
+
+      toast.success(
+        `Mission ${
+          typeof open === "object" ? "updated" : "added"
+        } successfully`,
+        { id: toastId }
+      );
+
       setIsLoading(false);
       setOpen("");
-      toast.success(`Mission ${typeof open === "object" ? "updated" : "added"} successfully`);
+
       form.resetFields();
-    }, 2000);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to update", { id: toastId });
+    }
   };
 
   useEffect(() => {
-    if (open && (open as Challenge)?.missionName) {
-      form.setFieldsValue({ missionName: (open as Challenge)?.missionName });
+    if (open && (open as Challenge)?.title) {
+      form.setFieldsValue({ title: (open as Challenge)?.title });
     }
-    if (open && (open as Challenge)?.points) {
-      form.setFieldsValue({ points: (open as Challenge)?.points });
+    if (open && (open as Challenge)?.totalPoints) {
+      form.setFieldsValue({ totalPoints: (open as Challenge)?.totalPoints });
     }
   }, [open]);
 
@@ -51,14 +82,14 @@ function AddEditMathMission({ open, setOpen }: Props) {
     >
       <Form onFinish={handleAddEditUser} layout="vertical" form={form}>
         <Form.Item
-          name="missionName"
+          name="title"
           label={<h2 className="text-lg font-semibold">Mission Name</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input placeholder="Enter mission name" className="h-12" />
         </Form.Item>
         <Form.Item
-          name="points"
+          name="totalPoints"
           label={<h2 className="text-lg font-semibold">Points</h2>}
           rules={[{ required: true, message: "Please input your name!" }]}
         >
@@ -76,8 +107,10 @@ function AddEditMathMission({ open, setOpen }: Props) {
               <Loader className="w-6 h-6 animate-spin" />
               Loading...
             </span>
+          ) : typeof open === "object" ? (
+            "Edit Mission"
           ) : (
-            typeof open === "object" ? "Edit Mission" : "Add New Mission"
+            "Add New Mission"
           )}
         </button>
       </Form>

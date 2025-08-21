@@ -55,9 +55,9 @@ const MyPagination = ({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex justify-center items-center mt-8 mb-4 gap-4">
+    <div className="flex justify-center items-center gap-4">
       <button
-        className="bg-primary text-white px-2 py-1 rounded-sm"
+        className="bg-gradient-to-b from-green-400 to-green-500 text-white px-2 py-1 rounded-sm"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
@@ -72,8 +72,8 @@ const MyPagination = ({
         ) : (
           <button
             key={num}
-            className={`px-2 py-1 border border-primary rounded-sm ${
-              currentPage === num ? "bg-primary text-white" : ""
+            className={`px-2 py-1 border border-green-400 rounded-sm ${
+              currentPage === num ? "bg-gradient-to-b from-green-400 to-green-500 text-white" : ""
             }`}
             onClick={() => onPageChange(num as number)}
           >
@@ -83,7 +83,7 @@ const MyPagination = ({
       )}
 
       <button
-        className="bg-primary px-2 py-1 text-white rounded-sm"
+        className="bg-gradient-to-b from-green-400 to-green-500 text-white px-2 py-1 rounded-sm"
         disabled={currentPage === totalPage}
         onClick={() => onPageChange(currentPage + 1)}
       >

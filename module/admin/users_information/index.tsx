@@ -5,14 +5,17 @@ import TableComponent from "@/sheard/TableComponent";
 import { Modal, Pagination } from "antd";
 import LeaderboardComponent from "./leaderboard";
 import { toast } from "sonner";
-import { useAllUserQuery } from "@/redux/features/dashboard/dashboard.api";
+import {
+  useAllUserQuery,
+  useBlockUserMutation,
+} from "@/redux/features/dashboard/dashboard.api";
 import Spinner from "@/components/common/Spinner";
 import MyPagination from "@/components/common/MyPagination";
 
 type User = {
   id: string;
   user_id: string;
-  name: string;
+  fullName: string;
   email: string;
   status: string;
 };
@@ -32,7 +35,25 @@ function UsersInformationComponent({
     { name: "page", value: String(currentPage) },
   ]);
 
-  const handleBlockUser = () => {};
+  const [updateStatus] = useBlockUserMutation();
+
+  const handleBlockUser = async (id: string, status: string) => {
+    const toastId = toast.loading("Updating...");
+
+    const userStatus = status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+
+    try {
+      await updateStatus({
+        id,
+        data: { status: userStatus },
+      }).unwrap();
+
+      toast.success("Update success", { id: toastId });
+      setSelectedUser(null);
+    } catch (err: any) {
+      toast.error(err.data?.message || "Failed to update", { id: toastId });
+    }
+  };
 
   if (isFetching) {
     return <Spinner />;
@@ -110,8 +131,14 @@ function UsersInformationComponent({
                           setIsOpen("");
                         }}
                       >
-                        <span className="mr-2 w-2 h-2 rounded-full bg-green-500"></span>
-                        Block
+                        <span
+                          className={`mr-2 w-2 h-2 rounded-full  ${
+                            user?.status === "ACTIVE"
+                              ? "bg-red-500"
+                              : "bg-green-500"
+                          }`}
+                        ></span>
+                        {user?.status === "ACTIVE" ? "Block" : "Unblock"}
                       </button>
                     </div>
                   </div>
@@ -131,7 +158,10 @@ function UsersInformationComponent({
 
         <Modal
           title={
-            <span className="text-lg font-semibold">Confirm User Block</span>
+            <span className="text-lg font-semibold">
+              Confirm User{" "}
+              {selectedUser?.status === "ACTIVE" ? "Block" : "Unblock"}
+            </span>
           }
           open={!!selectedUser}
           onCancel={() => {
@@ -160,12 +190,17 @@ function UsersInformationComponent({
               </div>
               <div className="ml-3 bg-red-50 p-4 rounded-md w-full">
                 <h3 className="text-lg font-medium text-gray-900">
-                  Block User Confirmation
+                  {selectedUser?.status === "ACTIVE" ? "Block" : "Unblock"} User
+                  Confirmation
                 </h3>
                 <div className="mt-2 text-sm text-gray-500">
-                  <p>Are you sure you want to block this user?</p>
+                  <p>
+                    Are you sure you want to{" "}
+                    {selectedUser?.status === "ACTIVE" ? "block" : "unblock"}{" "}
+                    this user?
+                  </p>
                   <p className="mt-2 font-medium">
-                    User: {selectedUser?.name || "Unknown"}
+                    User: {selectedUser?.fullName || "Unknown"}
                   </p>
                 </div>
               </div>
@@ -178,21 +213,16 @@ function UsersInformationComponent({
               >
                 Cancel
               </button>
-              {/* <button
+              <button
                 key="block"
-                onClick={handleBlockUser}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 ml-2 transition-colors cursor-pointer"
-                disabled={isLoading}
+                onClick={() =>
+                  handleBlockUser(selectedUser?.id!, selectedUser?.status!)
+                }
+                className={`px-4 py-2 rounded-md text-sm font-medium text-white ml-2 transition-colors cursor-pointer ${selectedUser?.status === "ACTIVE" ? "bg-red-500" : "bg-green-500"}`}
               >
-                {isLoading ? (
-                  <span className="flex items-center gap-2 justify-center">
-                    <Loader className="animate-spin w-4 h-4" />
-                    Loading...
-                  </span>
-                ) : (
-                  "Confirm Block"
-                )}
-              </button> */}
+                Confirm{" "}
+                {selectedUser?.status === "ACTIVE" ? "Block" : "Unblock"}
+              </button>
             </div>
           </div>
         </Modal>
