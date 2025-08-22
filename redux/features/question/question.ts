@@ -46,6 +46,94 @@ export const questionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Question"],
     }),
+
+    timeQuestions: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParams) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/time-challenge-questions",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["TimeQuestion"],
+    }),
+
+    addTimeQuestion: builder.mutation({
+      query: (data) => ({
+        url: "/time-challenge-questions",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["TimeQuestion"],
+    }),
+
+    updateTimeQuestion: builder.mutation({
+      query: (args) => ({
+        url: `/time-challenge-questions/${args.id}`,
+        method: "PUT",
+        body: args.data,
+      }),
+      invalidatesTags: ["TimeQuestion"],
+    }),
+
+    deleteTimeQuestion: builder.mutation({
+      query: (id) => ({
+        url: `/time-challenge-questions/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["TimeQuestion"],
+    }),
+
+    dailyQuestions: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParams) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/practice-questions",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["DailyQuestion"],
+    }),
+
+    addDailyQuestion: builder.mutation({
+      query: (data) => ({
+        url: "/practice-questions",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["DailyQuestion"],
+    }),
+
+    updateDailyQuestion: builder.mutation({
+      query: (args) => ({
+        url: `/practice-questions/${args.id}`,
+        method: "PUT",
+        body: args.data,
+      }),
+      invalidatesTags: ["DailyQuestion"],
+    }),
+
+    deleteDailyQuestion: builder.mutation({
+      query: (id) => ({
+        url: `/practice-questions/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["DailyQuestion"],
+    }),
   }),
 });
 
@@ -54,4 +142,12 @@ export const {
   useAddMathQuestionMutation,
   useUpdateMathQuestionMutation,
   useDeleteMathQuestionMutation,
+  useTimeQuestionsQuery,
+  useAddTimeQuestionMutation,
+  useUpdateTimeQuestionMutation,
+  useDeleteTimeQuestionMutation,
+  useDailyQuestionsQuery,
+  useAddDailyQuestionMutation,
+  useUpdateDailyQuestionMutation,
+  useDeleteDailyQuestionMutation,
 } = questionApi;

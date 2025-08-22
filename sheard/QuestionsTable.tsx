@@ -1,34 +1,87 @@
 import { Pencil, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import TableComponent from "./TableComponent";
-import { Pagination } from "antd";
 import { Question } from "@/module/admin/daily_practice";
-import { useMathQuestionsQuery } from "@/redux/features/question/question";
+import {
+  useDailyQuestionsQuery,
+  useMathQuestionsQuery,
+  useTimeQuestionsQuery,
+} from "@/redux/features/question/question";
 import Spinner from "@/components/common/Spinner";
 import MyPagination from "@/components/common/MyPagination";
+import { usePathname } from "next/navigation";
 interface Props {
-  id: string;
+  id?: string;
   setOpen: (open: Question | string) => void;
   setDeleteMissions: (deleteMissions: Question | string) => void;
 }
 
 function QuestionsTable({ id, setOpen, setDeleteMissions }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: allData, isFetching } = useMathQuestionsQuery([
-    { name: "mathMissionId", value: id },
-    { name: "limit", value: 10 },
-    { name: "page", value: String(currentPage) },
-  ]);
+  const pathName = usePathname();
+  const timeChallenge = pathName.includes("/time_challenges");
+  const dailyPractice = pathName.includes("/daily_practice");
 
-  const data = allData?.data?.allQuestions;
+  const { data: allData, isFetching } = useMathQuestionsQuery(
+    [
+      { name: "mathMissionId", value: id },
+      { name: "limit", value: 10 },
+      { name: "page", value: String(currentPage) },
+    ],
+    {
+      skip: timeChallenge || dailyPractice,
+    }
+  );
+
+  const { data: timeData, isFetching: timeFetching } = useTimeQuestionsQuery(
+    [
+      { name: "timeChallengeId", value: id },
+      { name: "limit", value: 10 },
+      { name: "page", value: String(currentPage) },
+    ],
+    {
+      skip: !timeChallenge,
+    }
+  );
+
+  const { data: dailyData, isFetching: dailyFetching } = useDailyQuestionsQuery(
+    [
+      { name: "limit", value: 10 },
+      { name: "page", value: String(currentPage) },
+    ],
+    {
+      skip: !dailyPractice,
+    }
+  );
+
+  const data = timeChallenge
+    ? timeData?.data?.allQuestions
+    : dailyPractice
+    ? dailyData?.data?.result
+    : allData?.data?.allQuestions;
+
+  console.log(dailyData);
+  console.log(data);
 
   const metaData = {
-    page: allData?.data?.page,
-    limit: allData?.data?.limit,
-    total: allData?.data?.total,
+    page: timeChallenge
+      ? timeData?.data?.page
+      : dailyPractice
+      ? dailyData?.data?.page
+      : allData?.data?.page,
+    limit: timeChallenge
+      ? timeData?.data?.limit
+      : dailyPractice
+      ? dailyData?.data?.limit
+      : allData?.data?.limit,
+    total: timeChallenge
+      ? timeData?.data?.total
+      : dailyPractice
+      ? dailyData?.data?.total
+      : allData?.data?.total,
   };
 
-  if (isFetching) {
+  if (isFetching || timeFetching || dailyFetching) {
     return <Spinner />;
   }
 
@@ -51,7 +104,20 @@ function QuestionsTable({ id, setOpen, setDeleteMissions }: Props) {
         {data?.map((question: any) => (
           <tr key={question?.id} className="border-b hover:bg-gray-100">
             <td className="px-6 py-4">Q-{question?.id.slice(-5)}</td>
-            <td className="p-4">{question?.title}</td>
+            <td className="p-4">
+              {" "}
+              {dailyPractice
+                ? `${question?.firstNumber} ${
+                    question?.topic?.title === "Addition"
+                      ? "+"
+                      : question?.topic?.title === "Subtraction"
+                      ? "-"
+                      : question?.topic?.title === "Multiplication"
+                      ? "x"
+                      : "/"
+                  } ${question?.secondNumber}`
+                : question?.title}
+            </td>
             <td className="p-4">{question?.option1}</td>
             <td className="p-4">{question?.option2}</td>
             <td className="p-4">{question?.option3}</td>

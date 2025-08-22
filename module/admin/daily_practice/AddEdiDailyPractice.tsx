@@ -5,11 +5,15 @@ import { useEffect, useState } from "react";
 import { Question } from ".";
 import { toast } from "sonner";
 import {
+  useAddDailyQuestionMutation,
   useAddMathQuestionMutation,
+  useAddTimeQuestionMutation,
+  useUpdateDailyQuestionMutation,
   useUpdateMathQuestionMutation,
+  useUpdateTimeQuestionMutation,
 } from "@/redux/features/question/question";
 import { useAllTopicQuery } from "@/redux/features/other/other.api";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 interface Props {
   open: Question | string;
@@ -20,8 +24,16 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const { question } = useParams();
+  const pathName = usePathname();
+  const timeChallenge = pathName.includes("/time_challenges");
+  const dailyPractice = pathName.includes("/daily_practice");
+
   const [update] = useUpdateMathQuestionMutation();
+  const [updateTimeQ] = useUpdateTimeQuestionMutation();
+  const [updateDailyQ] = useUpdateDailyQuestionMutation();
   const [add] = useAddMathQuestionMutation();
+  const [addTimeQ] = useAddTimeQuestionMutation();
+  const [addDailyQ] = useAddDailyQuestionMutation();
   const { data } = useAllTopicQuery(undefined);
 
   const handleAddEditUser = async (values: any) => {
@@ -30,23 +42,8 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
 
     try {
       if (open === "add") {
-        await add({
-          title: values.title,
-          option1: values.option1,
-          option2: values.option2,
-          option3: values.option3,
-          option4: values.option4,
-          correctAnswer: values.correctAnswer,
-          point: parseInt(values.point),
-          type: values.type,
-          difficulty: values.difficulty.toUpperCase(),
-          topicId: values.topicId,
-          mathMissionId: question,
-        }).unwrap();
-      } else {
-        await update({
-          id: (open as Question).id,
-          data: {
+        if (timeChallenge) {
+          await addTimeQ({
             title: values.title,
             option1: values.option1,
             option2: values.option2,
@@ -57,8 +54,88 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
             type: values.type,
             difficulty: values.difficulty.toUpperCase(),
             topicId: values.topicId,
-          },
-        }).unwrap();
+            timeChallengeId: question,
+          }).unwrap();
+        } else if (dailyPractice) {
+          await addDailyQ({
+            firstNumber: parseFloat(values.firstNumber),
+            secondNumber: parseFloat(values.secondNumber),
+            option1: values.option1,
+            option2: values.option2,
+            option3: values.option3,
+            option4: values.option4,
+            correctAnswer: values.correctAnswer,
+            point: parseInt(values.point),
+            type: values.type,
+            difficulty: values.difficulty.toUpperCase(),
+            topicId: values.topicId,
+            timeChallengeId: question,
+          }).unwrap();
+        } else {
+          await add({
+            title: values.title,
+            option1: values.option1,
+            option2: values.option2,
+            option3: values.option3,
+            option4: values.option4,
+            correctAnswer: values.correctAnswer,
+            point: parseInt(values.point),
+            type: values.type,
+            difficulty: values.difficulty.toUpperCase(),
+            topicId: values.topicId,
+            mathMissionId: question,
+          }).unwrap();
+        }
+      } else {
+        if (timeChallenge) {
+          await updateTimeQ({
+            id: (open as Question).id,
+            data: {
+              title: values.title,
+              option1: values.option1,
+              option2: values.option2,
+              option3: values.option3,
+              option4: values.option4,
+              correctAnswer: values.correctAnswer,
+              point: parseInt(values.point),
+              type: values.type,
+              difficulty: values.difficulty.toUpperCase(),
+              topicId: values.topicId,
+            },
+          }).unwrap();
+        } else if (dailyPractice) {
+          await updateDailyQ({
+            id: (open as Question).id,
+            data: {
+              firstNumber: parseFloat(values.firstNumber),
+              secondNumber: parseFloat(values.secondNumber),
+              option1: values.option1,
+              option2: values.option2,
+              option3: values.option3,
+              option4: values.option4,
+              correctAnswer: values.correctAnswer,
+              type: values.type,
+              difficulty: values.difficulty.toUpperCase(),
+              topicId: values.topicId,
+            },
+          }).unwrap();
+        } else {
+          await update({
+            id: (open as Question).id,
+            data: {
+              title: values.title,
+              option1: values.option1,
+              option2: values.option2,
+              option3: values.option3,
+              option4: values.option4,
+              correctAnswer: values.correctAnswer,
+              point: parseInt(values.point),
+              type: values.type,
+              difficulty: values.difficulty.toUpperCase(),
+              topicId: values.topicId,
+            },
+          }).unwrap();
+        }
       }
 
       toast.success(
@@ -76,11 +153,9 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     if (typeof open === "object" && open !== null) {
-      form.setFieldsValue({
-        title: open.title,
+      const defaultValues: any = {
         option1: open.option1,
         option2: open.option2,
         option3: open.option3,
@@ -90,9 +165,18 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
         type: open.type,
         difficulty: open.difficulty,
         topicId: open.topic?.id,
-      });
+      };
+
+      if (dailyPractice) {
+        defaultValues.firstNumber = open.firstNumber;
+        defaultValues.secondNumber = open.secondNumber;
+      } else {
+        defaultValues.title = open.title;
+      }
+
+      form.setFieldsValue(defaultValues);
     }
-  }, [open, form]);
+  }, [open, dailyPractice, form]);
 
   const options = data?.data?.map((item: any) => {
     return { label: item?.title, value: item?.id };
@@ -144,13 +228,37 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
           </Form.Item>
         </div>
 
-        <Form.Item
-          name="title"
-          label="Question"
-          rules={[{ required: true, message: "Please input your question!" }]}
-        >
-          <Input.TextArea placeholder="Enter your question" rows={4} />
-        </Form.Item>
+        {dailyPractice ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Form.Item
+              name="firstNumber"
+              label="First Number"
+              rules={[
+                { required: true, message: "Please input the First Number!" },
+              ]}
+            >
+              <Input placeholder="Enter correct answer" className="h-12" />
+            </Form.Item>
+
+            <Form.Item
+              name="secondNumber"
+              label="Second Number"
+              rules={[
+                { required: true, message: "Please input the Second Number!" },
+              ]}
+            >
+              <Input placeholder="Enter correct answer" className="h-12" />
+            </Form.Item>
+          </div>
+        ) : (
+          <Form.Item
+            name="title"
+            label="Question"
+            rules={[{ required: true, message: "Please input your question!" }]}
+          >
+            <Input.TextArea placeholder="Enter your question" rows={4} />
+          </Form.Item>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
           {["option1", "option2", "option3", "option4"].map((opt, i) => (
@@ -192,13 +300,19 @@ function AddEdiDailyPractice({ open, setOpen }: Props) {
             />
           </Form.Item>
 
-          <Form.Item
-            name="point"
-            label="Points"
-            rules={[{ required: true, message: "Please input points!" }]}
-          >
-            <Input type="number" placeholder="Enter points" className="h-12" />
-          </Form.Item>
+          {!dailyPractice && (
+            <Form.Item
+              name="point"
+              label="Points"
+              rules={[{ required: true, message: "Please input points!" }]}
+            >
+              <Input
+                type="number"
+                placeholder="Enter points"
+                className="h-12"
+              />
+            </Form.Item>
+          )}
         </div>
 
         <button

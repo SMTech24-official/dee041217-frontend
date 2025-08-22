@@ -7,8 +7,7 @@ import { useSearchParams } from "next/navigation";
 import DeleteModal from "@/sheard/DeleteModal";
 import AddEdiDailyPractice from "../daily_practice/AddEdiDailyPractice";
 import { toast } from "sonner";
-import Spinner from "@/components/common/Spinner";
-import { useDeleteMathQuestionMutation, useMathQuestionsQuery } from "@/redux/features/question/question";
+import { useDeleteMathQuestionMutation } from "@/redux/features/question/question";
 
 export type Question = {
   id: string;
@@ -65,6 +64,7 @@ function MathMissionQuestion({ id }: { id: string }) {
         setOpen={setOpen}
         setDeleteMissions={setDeleteMissions}
       />
+      
       <AddEdiDailyPractice open={open} setOpen={setOpen} />
 
       <DeleteModal
