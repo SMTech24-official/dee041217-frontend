@@ -70,7 +70,7 @@ export default function PracticeComponent() {
   }
 
   return (
-    <div className="w-full md:w-7/12 mx-auto p-5 h-full flex items-center justify-center flex-col gap-5 md:gap-10">
+    <div className="w-full md:w-7/12 mx-auto p-5 h-full flex items-center justify-center flex-col gap-5 md:gap-10 mt-10">
       {categories.map((category: any) => {
         return (
           <div

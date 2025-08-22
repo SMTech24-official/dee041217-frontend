@@ -20,16 +20,13 @@ export default function DashboardLayout({
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Desktop Sidebar */}
       <aside className="hidden md:flex md:w-64 flex-col justify-between bg-white/10 p-6 border-r border-white/10">
         <Sidebar />
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1">
-        {/* Topbar */}
         <Headers />
-        <div className="overflow-y-auto p-5 h-[calc(100vh-80px)] overscroll-none">{children}</div>
+        <div className="">{children}</div>
       </main>
     </div>
   );

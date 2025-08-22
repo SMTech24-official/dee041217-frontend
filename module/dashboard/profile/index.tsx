@@ -10,7 +10,7 @@ import {
 import Spinner from "@/components/common/Spinner";
 import { useAvatarsQuery } from "@/redux/features/other/other.api";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const gradients = [
@@ -43,6 +43,7 @@ const getRandomGradient = () => {
 function ProfileComponent() {
   const [open, setOpen] = useState(false);
   const [avatarId, setAvatarId] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
   const { data, isFetching } = useGetMeQuery(undefined);
   const { data: avatarData } = useAvatarsQuery(undefined);
   const [updateAvatar] = useUpdateUserMutation();
@@ -64,8 +65,6 @@ function ProfileComponent() {
   const currentPoints = userData?.point ?? 0;
   const currentLevel = userData?.level ?? 1;
 
-  const nextLevelPoints = currentLevel * 1000;
-
   const progressPoints = currentPoints - (currentLevel - 1) * 1000;
 
   const progressPercent = Math.min((progressPoints / 1000) * 100, 100);
@@ -77,7 +76,7 @@ function ProfileComponent() {
     const toastId = toast.loading("Updating...");
 
     try {
-      const res = await updateAvatar({ avatarId }).unwrap();
+      const res = await updateAvatar({ avatarId, fullName }).unwrap();
 
       if (res.success === true) {
         toast.success("Update success", { id: toastId });
@@ -107,7 +106,7 @@ function ProfileComponent() {
           <SquarePen />
         </div>
       </div>
-
+      <h3 className="text-xl font-semibold">{userData?.fullName}</h3>
       {/* Progress bar */}
       <div className="w-full">
         <div className="relative h-12 bg-white rounded-full overflow-hidden shadow-md">
@@ -193,6 +192,20 @@ function ProfileComponent() {
             <Dialog.Title className="text-2xl font-bold text-center mb-4">
               Select An Avatar
             </Dialog.Title>
+
+            <div className="mb-5">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                defaultValue={userData?.fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
+                placeholder="Enter full name"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               {avatars?.map((item: any) => (
                 <div key={item.id} className="flex justify-center">

@@ -48,6 +48,24 @@ export const mathApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    randomQuestion: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParams) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/practice-questions/random",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["User"],
+    }),
   }),
 });
 
@@ -57,4 +75,5 @@ export const {
   useLeaderBoardQuery,
   useUserReportQuery,
   useAvatarsQuery,
+  useRandomQuestionQuery,
 } = mathApi;

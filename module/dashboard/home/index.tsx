@@ -13,6 +13,7 @@ function DashboardHomeComponent() {
     {
       id: 1,
       title: "Solve 05 Math Questions",
+      limit: 5,
       description: "By PowerMath Defenders",
       icon: mathGreen,
       color:
@@ -25,6 +26,7 @@ function DashboardHomeComponent() {
     {
       id: 2,
       title: "Solve 10 Math Questions",
+      limit: 10,
       description: "By PowerMath Defenders",
       icon: mathBlue,
       color: "from-blue-50 to-blue-50 hover:from-blue-200 hover:to-blue-100",
@@ -36,6 +38,7 @@ function DashboardHomeComponent() {
     {
       id: 3,
       title: "Solve 15 Math Questions",
+      limit: 15,
       description: "By PowerMath Defenders",
       icon: mathRed,
       color: "from-red-50 to-red-50 hover:from-red-200 hover:to-red-100",
@@ -47,6 +50,7 @@ function DashboardHomeComponent() {
     {
       id: 4,
       title: "Solve 20 Math Questions",
+      limit: 20,
       description: "By PowerMath Defenders",
       icon: mathYellow,
       color:
@@ -94,7 +98,8 @@ function DashboardHomeComponent() {
         </h1>
         <div className="p-5 space-y-4">
           {dailyMissionData.map((mission) => (
-            <div
+            <Link 
+            href={`/dashboard/random?limit=${mission.limit}`}
               key={mission.id}
               className={`p-6 bg-gradient-to-r ${mission.color} ${mission.shadowColor} rounded-3xl flex items-center justify-between transition-all duration-300 cursor-pointer`}
             >
@@ -117,7 +122,7 @@ function DashboardHomeComponent() {
               <div className={`${mission.iconBg}`}>
                 <Play className="h-8 w-8 fill-current" />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

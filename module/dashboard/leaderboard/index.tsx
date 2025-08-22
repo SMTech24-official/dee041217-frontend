@@ -15,9 +15,13 @@ export default function LeaderboardComponent() {
     { name: "page", value: String(currentPage) },
   ]);
 
+  const { data: topUser } = useLeaderBoardQuery([
+    { name: "limit", value: 3 },
+  ]);
+
   const players = data?.data?.result || [];
 
-  const topPlayers = players.slice(0, 3);
+  const topPlayers = topUser?.data?.result
 
   const otherPlayers = players.slice(3);
 
@@ -31,7 +35,7 @@ export default function LeaderboardComponent() {
     return <Spinner />;
   }
   return (
-    <div className="w-full md:w-7/12 mx-auto p-5 mt-48 sm:mt-0 h-full flex items-center justify-center flex-col gap-5 md:gap-10">
+    <div className="w-full md:w-7/12 mx-auto p-5 sm:mt-0 h-full flex items-center justify-center flex-col gap-5 md:gap-10">
       <div className="relative z-10 p-6 pt-10 w-full">
         {/* Top 3 Players */}
         <div className="flex md:gap-5 gap-2 justify-evenly md:mb-0 mb-2">
